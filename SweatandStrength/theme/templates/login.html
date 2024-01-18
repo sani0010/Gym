@@ -1,0 +1,36 @@
+<!-- login.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Login - Your App{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+    <div class="bg-white p-8 rounded shadow-md w-96">
+        <h1 class="text-2xl font-semibold mb-4">Login</h1>
+
+        <!-- Your Django form goes here -->
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium text-gray-600">Username:</label>
+                <input type="text" id="username" name="username" class="mt-1 p-2 w-full border rounded-md">
+            </div>
+
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-gray-600">Password:</label>
+                <input type="password" id="password" name="password" class="mt-1 p-2 w-full border rounded-md">
+            </div>
+
+            <button type="submit"
+                class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                Login
+            </button>
+        </form>
+        <!-- End of Django form -->
+
+        <p class="mt-4 text-sm text-gray-600">Don't have an account? <a href="{% url 'signup' %}"
+                class="text-blue-500">Signup here</a></p>
+    </div>
+{% endblock %}
