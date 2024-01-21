@@ -61,7 +61,10 @@ def Login(request):
         # Login the user
         login(request, user)
         messages.success(request, "You have been successfully logged in")
-        return redirect("base")
+        return redirect("navbar")
 
 
     return render(request, "login.html")
+
+def navbar(request):
+    return render(request, 'navbar.html')
