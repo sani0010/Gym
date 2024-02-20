@@ -3,10 +3,16 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from .models import  Workout, WorkoutImage
 
 # Create your views here.
 def Home(request):
-    return render(request, "base.html")
+    workout = Workout.objects.all()
+
+    context = {
+        "workout": workout
+    }
+    return render(request, "base.html" , context)
 
 def Signup(request):
     if request.method == "POST":
@@ -68,3 +74,7 @@ def Login(request):
 
 def navbar(request):
     return render(request, 'navbar.html')
+
+
+
+
