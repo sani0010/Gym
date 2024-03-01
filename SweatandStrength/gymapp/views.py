@@ -25,10 +25,15 @@ def Signup(request):
         if not username:
             messages.error(request, "Username cannot be empty")
             return redirect("signup")
+        
+
+        if not email:
+            messages.error(request, "Username cannot be empty")
+            return redirect("signup")
 
         # Check if passwords match
         if password != confirm_password:
-            messages.error(request, "Passwords do not match")
+            messages.error(request, "Passwords dose not match")
             return redirect("signup")
 
         # Create a new user object

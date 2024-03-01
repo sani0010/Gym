@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+from django.contrib.messages import constants as messages
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +43,8 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'django_browser_reload',
-    'gymapp'
+    'gymapp',
+    
 ]
 
 TAILWIND_APP_NAME = 'theme'
@@ -87,9 +91,13 @@ WSGI_APPLICATION = 'SweatandStrength.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+   'default': {
+        "ENGINE": "django.db.backends.postgresql",
+        'NAME': 'S&S',
+        'USER': 'postgres',
+        'PORT': '5432',
+        'PASSWORD': '@996#Tamrakar',
+        'HOST': 'localhost',
     }
 }
 
@@ -140,3 +148,13 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
+
+JAZZMIN_SETTINGS = {
+    'site_header': 'Sweat and Strength',
+    'copyright': 'Sweat&Strength.com',
+}
+
+
+MESSAGE_TAGS={
+    messages.ERROR:'danger'
+}
