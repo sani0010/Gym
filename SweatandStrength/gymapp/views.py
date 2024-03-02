@@ -5,6 +5,12 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from .models import  Workout, WorkoutImage
 
+
+def workout(request):
+    video_url = request.GET.get('video_url')
+    return render(request, 'workout.html', {'video_url': video_url})
+
+
 # Create your views here.
 def Home(request):
     workout = Workout.objects.all()
@@ -28,7 +34,7 @@ def Signup(request):
         
 
         if not email:
-            messages.error(request, "Username cannot be empty")
+            messages.error(request, "Email cannot be empty")
             return redirect("signup")
 
         # Check if passwords match

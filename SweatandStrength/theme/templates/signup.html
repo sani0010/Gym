@@ -15,17 +15,12 @@
         <form action="{% url 'signup' %}" method="post">
             {% csrf_token %}
             <div class="mb-4">
-                {% if messages %}
                 {% for message in messages %}
-                {% if message.tags == messages.ERROR %}
-                  <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                    <span class="font-medium"></span>
-                    <strong>{{ message }}</strong>
-                  </div>
-                {% endif %}
+                    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                      <span class="font-medium"></span>
+                      <strong>{{ message }}</strong>
+                    </div>
                 {% endfor %}
-                {% endif %}
-                
                 <label for="username" class="block text-sm font-medium text-gray-600">Username:</label>
                 <input type="text" id="username" name="username" class="mt-1 p-2 w-full border rounded-md">
             </div>
