@@ -7,8 +7,9 @@ from .models import  Workout, WorkoutImage
 
 
 def workout(request):
-    video_url = request.GET.get('video_url')
-    return render(request, 'workout.html', {'video_url': video_url})
+    workouts = Workout.objects.all()
+    return render(request, 'workout.html', {'workouts': workouts})
+
 
 
 # Create your views here.

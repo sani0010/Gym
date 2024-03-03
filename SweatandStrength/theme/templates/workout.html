@@ -1,19 +1,15 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>workout</title>
-    <link href="{% static 'tailwind.min.css' %}" rel="stylesheet">
-    <!-- Add any additional styling for the video page -->
-</head>
+
 <body class="bg-gray-200">
-    <div class="container mx-auto p-4">
-        <h1 class="text-2xl font-bold mb-4">Video Page</h1>
-        <div class="embed-responsive">
-            <iframe src="{{ video_url }}" frameborder="0" allowfullscreen class="w-full h-full"></iframe>
+    {% for workout in workouts %}
+        <div class="workout">
+            <h2>{{ workout.title }}</h2>
+            <p>{{ workout.description }}</p>
+            <video controls width="320" height="240">
+                <source src="{{ workout.video.url }}" type="video/mp4">
+            </video>
         </div>
-    </div>
+    {% endfor %}
 </body>
 </html>
