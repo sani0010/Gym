@@ -1,10 +1,11 @@
+{% block dashboard %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
     <title>Home Page</title>
 </head>
 <div class="flex flex-col md:flex-row mx-10 mb-10">
@@ -59,7 +60,7 @@
             <div class="w-full md:w-1/2 lg:w-1/4 px-4 mb-5 lg:mb-0 flex-none flex flex-col"> 
                 <div class="bg-white p-4 rounded-md shadow-md"> 
                     <div style="height: 60%;">  
-                      <a href="workout.html">
+  
                         <img class="default-img" src="{{ image.image.url }}" alt="" style="width: 100%; height: auto; max-width: 100%; max-height: 100%;">
                         <p>{{ p.title }}</p>
                     </div>
@@ -71,3 +72,4 @@
     {% endfor %}
 </div>
 
+{% endblock %}
