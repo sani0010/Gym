@@ -4,72 +4,60 @@
 
 
 
-<body class="bg-gray-100 min-h-screen">
-  <div class="flex">
-      <div class="w-64 bg-white p-4">
-          {% include 'navbar.html' %}
-      </div>
+<div class="flex">
 
-      
-      <div class="flex-grow bg-slate-50 p-4">
-        <h1 class="text-4xl font-bold mb-8"></h1>
-        <div class="content">
-            <div class="flex-1 bg-slate-50 p-4">
-                {% for workout in workouts %}
-                <div class="border w-full h-[55%] rounded-lg flex space-x-2 justify-between">
-                  <div class="flex-grow  max-w-full max-h-full rounded-lg ">
-                        <video controls class="w-full max-h-sm object-cover rounded-lg">
-                            <source src="{{ workout.video.url }}" type="video/mp4">
-                        </video>
-                    </div>
-                    {% endfor %}
-    
+    <div class="w-64 bg-white p-4">
+      {% include 'navbar.html' %}
+    </div>
 
-                
-                <div class="border w-[25%] h-full rounded-lg overflow-x-auto">
-                  <div class="border py-2 px-2 space-y-1">
+
+    <div class="p-10 flex-grow">
+        <div class=" border h-[55%] rounded-lg flex space-x-2">
+           {% for workout in workouts %}
+          <video controls class="absolute  object-cover rounded-lg">
+            <source src="{{ workout.video.url }}" type="video/mp4">
+          </video>
+          {% endfor %}
+
+
+            <div class="border w-[25%] rounded-lg overflow-x-auto">
+                <div class="border py-2 px-2 space-y-1">
                     <div>Image</div>
                     <div>Title</div>
                     <div>Time</div>
-                  </div>
-                  <div class="border py-2 px-2 space-y-1">
-                    <div>Image</div>
-                    <div>Title</div>
-                    <div>Time</div>
-                  </div>
-                  <div class="border py-2 px-2 space-y-1">
-                    <div>Image</div>
-                    <div>Title</div>
-                    <div>Time</div>
-                  </div>
-                  <div class="border py-2 px-2 space-y-1">
-                    <div>Image</div>
-                    <div>Title</div>
-                    <div>Time</div>
-                  </div>
-                  <div class="border py-2 px-2 space-y-1">
-                    <div>Image</div>
-                    <div>Title</div>
-                    <div>Time</div>
-                  </div>
-                  <div class="border py-2 px-2 space-y-1">
-                    <div>Image</div>
-                    <div>Title</div>
-                    <div>Time</div>
-                  </div>
-                  <div class="border py-2 px-2 space-y-1">
-                    <div>Image</div>
-                    <div>Title</div>
-                    <div>Time</div>
-                  </div>
                 </div>
+                <div class="border py-2 px-2 space-y-1">
+                  <div>Image</div>
+                  <div>Title</div>
+                  <div>Time</div>
               </div>
+              <div class="border py-2 px-2 space-y-1">
+                <div>Image</div>
+                <div>Title</div>
+                <div>Time</div>
             </div>
+            <div class="border py-2 px-2 space-y-1">
+              <div>Image</div>
+              <div>Title</div>
+              <div>Time</div>
           </div>
+          <div class="border py-2 px-2 space-y-1">
+            <div>Image</div>
+            <div>Title</div>
+            <div>Time</div>
+        </div>
+        <div class="border py-2 px-2 space-y-1">
+          <div>Image</div>
+          <div>Title</div>
+          <div>Time</div>
       </div>
-  </div>
-
-</body>
-
-
-  {% endblock %}
+      <div class="border py-2 px-2 space-y-1">
+        <div>Image</div>
+        <div>Title</div>
+        <div>Time</div>
+    </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

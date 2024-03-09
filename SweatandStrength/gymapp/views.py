@@ -1,14 +1,19 @@
 from django.shortcuts import redirect, render
-from django.http import HttpResponse
+
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from .models import  Workout, WorkoutImage
+from .models import  Workout, WorkoutImage, GymTrainerApplication
+
+from django.shortcuts import render, redirect
+from .forms import trainerform
+from django.http import HttpResponse
 
 
 def workout(request):
     workouts = Workout.objects.all()
     return render(request, 'workout.html', {'workouts': workouts})
+
 
 
 
@@ -90,3 +95,46 @@ def navbar(request):
 
 
 
+
+# def apply_for_trainer(request):
+#     if request.method == 'POST':
+#         form = trainerform(request.POST)
+#         if form.is_valid():
+#             name = form.cleaned_data['name']
+#             email = form.cleaned_data['email']
+#             phone = form.cleaned_data['phone']
+#             certification = form.cleaned_data['certification']
+#             experience = form.cleaned_data['experience'] 
+
+#             tariner = GymTrainerApplication.objects.create(name=name, email=email, phone=phone, certification=certification, experience=experience)
+#             tariner.save()
+#             return HttpResponse("Application submitted successfully")
+#     form = trainerform()
+#     return render(request, 'trainer_signup.html', {'form': form})
+
+
+
+def apply_for_trainer(request):
+    if request.method == 'POST':
+        form = trainerform(request.POST, request.FILES)
+        if form.is_valid():
+            # Get form data
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            phone = form.cleaned_data['phone']
+            certification = form.cleaned_data['certification']
+            experience = form.cleaned_data['experience']
+            
+            # Create a new GymTrainerApplication instance
+            trainer_application = GymTrainerApplication.objects.create(
+                name=name,
+                email=email,
+                phone=phone,
+                certification=certification,
+                experience=experience
+            )
+            
+            return redirect('home')  # Redirect to success page
+    else:
+        form = trainerform()
+    return render(request, 'trainer_signup.html', {'form': form})

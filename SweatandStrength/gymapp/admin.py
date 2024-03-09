@@ -1,6 +1,11 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import Trainer, Workout, WorkoutImage
+from django.contrib import admin
+from .models import GymTrainerApplication
+
+
+
 
 class TrainerAdmin(admin.ModelAdmin):
     list_display = ('username', 'email')
@@ -19,3 +24,4 @@ class WorkoutAdmin(admin.ModelAdmin):
 
 admin.site.register(Trainer, TrainerAdmin)
 admin.site.register(Workout, WorkoutAdmin)
+admin.site.register(GymTrainerApplication)

@@ -33,6 +33,9 @@ urlpatterns = [
     path('login/', views.Login, name="login"),
     path('navbar/', views.navbar, name='navbar'),
     path('workout/', views.workout, name="workout"),
+    
+
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

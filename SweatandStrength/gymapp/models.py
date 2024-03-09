@@ -38,3 +38,18 @@ class WorkoutImage(models.Model):
 
     class Meta:
         verbose_name_plural = "Workout Images"
+
+
+
+
+
+
+class GymTrainerApplication(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    certification = models.ImageField(upload_to='certifications/')
+    experience = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.name
