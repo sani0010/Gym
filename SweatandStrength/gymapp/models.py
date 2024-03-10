@@ -7,17 +7,6 @@ def user_directory_path(instance, filename):
     return 'workout_videos/{0}'.format(filename)
 
 
-
-class Trainer(models.Model):
-    username = models.CharField(max_length=255)
-    email = models.EmailField(unique=True, default='')
-    password = models.CharField(max_length=255)
-    
-
-
-    def __str__(self):
-        return self.username
-    
 class Workout(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     pid = ShortUUIDField(unique=True, length=10, max_length=20, alphabet='abcdefgh12345')
@@ -38,6 +27,7 @@ class WorkoutImage(models.Model):
 
     class Meta:
         verbose_name_plural = "Workout Images"
+
 
 
 

@@ -1,14 +1,13 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Trainer, Workout, WorkoutImage
+from .models import  Workout, WorkoutImage
 from django.contrib import admin
 from .models import GymTrainerApplication
 
 
+class GymTrainerApplicationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone', 'certification', 'experience')
 
-
-class TrainerAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email')
 
 class WorkoutImageAdmin(admin.TabularInline):
     model = WorkoutImage
@@ -22,6 +21,5 @@ class WorkoutAdmin(admin.ModelAdmin):
 
     display_video.short_description = 'Video Preview'
 
-admin.site.register(Trainer, TrainerAdmin)
 admin.site.register(Workout, WorkoutAdmin)
-admin.site.register(GymTrainerApplication)
+admin.site.register(GymTrainerApplication, GymTrainerApplicationAdmin)

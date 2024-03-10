@@ -45,9 +45,10 @@
                 <div class="border-t border-black w-16"></div>
                 <p class="text-lg text-gray-600 mx-4">Or</p>
                 <div class="border-t border-black w-16"></div> 
-                <button type="submit"
-                        class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
-                    Signup as trainer
+                <button type="button"
+                onclick="window.location.href='{% url 'trainer_signup' %}'"
+                class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+                Signup as trainer
                 </button>
             </div>
 
