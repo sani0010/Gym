@@ -10,6 +10,29 @@ from .forms import trainerform
 from django.http import HttpResponse
 
 
+
+from .forms import CalorieTrackingForm
+from .models import CalorieTracking
+
+def track_calories(request):
+    if request.method == 'POST':
+        form = CalorieTrackingForm(request.POST)
+        if form.is_valid():
+            calorie_entry = form.save(commit=False)
+            calorie_entry.user = request.user
+            calorie_entry.save()
+            messages.success(request, 'Calorie tracking data added successfully!')
+            return redirect('track_calories')
+    else:
+        form = CalorieTrackingForm()
+    
+    calorie_entries = CalorieTracking.objects.filter(user=request.user)
+    return render(request, 'track_calories.html', {'form': form, 'calorie_entries': calorie_entries})
+
+
+
+
+
 def workout(request):
     workouts = Workout.objects.all()
     return render(request, 'workout.html', {'workouts': workouts})

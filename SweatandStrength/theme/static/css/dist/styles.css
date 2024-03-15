@@ -781,10 +781,6 @@ select {
   position: fixed;
 }
 
-.absolute {
-  position: absolute;
-}
-
 .left-0 {
   left: 0px;
 }
@@ -872,6 +868,18 @@ select {
   height: 100vh;
 }
 
+.h-\[75\%\] {
+  height: 75%;
+}
+
+.h-\[60\%\] {
+  height: 60%;
+}
+
+.h-\[70\%\] {
+  height: 70%;
+}
+
 .min-h-screen {
   min-height: 100vh;
 }
@@ -892,12 +900,32 @@ select {
   width: 24rem;
 }
 
-.w-\[25\%\] {
-  width: 25%;
+.w-\[60\%\%\] {
+  width: 60%%;
 }
 
 .w-full {
   width: 100%;
+}
+
+.w-\[40\%\] {
+  width: 40%;
+}
+
+.w-\[45\%\] {
+  width: 45%;
+}
+
+.w-\[30\%\] {
+  width: 30%;
+}
+
+.w-\[70\%\%\] {
+  width: 70%%;
+}
+
+.w-\[70\%\] {
+  width: 70%;
 }
 
 .max-w-md {
@@ -1017,9 +1045,19 @@ select {
   background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 
+.bg-red-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(252 165 165 / var(--tw-bg-opacity));
+}
+
 .bg-red-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 242 242 / var(--tw-bg-opacity));
+}
+
+.bg-red-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(239 68 68 / var(--tw-bg-opacity));
 }
 
 .bg-slate-50 {

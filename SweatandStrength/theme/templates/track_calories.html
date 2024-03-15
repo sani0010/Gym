@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Track Calories</title>
+</head>
+<body>
+    <h1>Track Calories</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    
+    <h2>Calorie Tracking Entries:</h2>
+    <ul>
+        {% for entry in calorie_entries %}
+            <li>{{ entry.date }} - {{ entry.calories_consumed }} calories</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

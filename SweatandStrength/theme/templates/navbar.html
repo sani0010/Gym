@@ -17,19 +17,14 @@
                 <span class="ml-auto bg-gray-100 text-gray-800 rounded-full px-2 text-sm">Pro</span>
             </a>
         </li>
-        <li>
-            <a href="#" class="flex items-center p-2 text-blue-900 rounded-lg hover:blue-100">
-                <span>Routine</span>
-                <span class="ml-auto bg-blue-100 text-blue-800 rounded-full px-2 text-sm">3</span>
-            </a>
-        </li>
+
         <li>
             <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
                 <span>Trainer</span>
             </a>
         </li>
         <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
+            <a href="{% url 'track_calories' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
                 <span>Calorie</span>
             </a>
             <li>
@@ -40,6 +35,10 @@
                     <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
                         <span>Settings</span>
                     </a>
+                    <li>
+                        <a href="{% url 'login' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
+                            <span>Logout</span>
+                        </a>
     
 
     </ul>

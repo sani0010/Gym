@@ -11,16 +11,17 @@
     </div>
 
 
-    <div class="p-10 flex-grow">
-        <div class=" border h-[55%] rounded-lg flex space-x-2">
+    <div class="p-10 flex-grow border">
+        <div class=" border h-[70%] rounded-lg flex  space-x-2">
            {% for workout in workouts %}
-          <video controls class="absolute  object-cover rounded-lg">
+          <video controls class=" w-[70%] object-cover rounded-lg">
             <source src="{{ workout.video.url }}" type="video/mp4">
           </video>
           {% endfor %}
 
+<div class="border w-[30%] overflow-x-auto">
 
-            <div class="border w-[25%] rounded-lg overflow-x-auto">
+
                 <div class="border py-2 px-2 space-y-1">
                     <div>Image</div>
                     <div>Title</div>
@@ -56,6 +57,7 @@
         <div>Title</div>
         <div>Time</div>
     </div>
+  </div>
             </div>
         </div>
     </div>

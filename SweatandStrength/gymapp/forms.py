@@ -2,6 +2,7 @@ from django import forms
 from .models import GymTrainerApplication
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import CalorieTracking
 
 class trainerform(forms.ModelForm):
     class Meta:
@@ -17,3 +18,15 @@ class trainerform(forms.ModelForm):
             raise forms.ValidationError("Experience cannot be negative.")
         return experience
     
+
+
+
+ 
+
+class CalorieTrackingForm(forms.ModelForm):
+    class Meta:
+        model = CalorieTracking
+        fields = ['date', 'calories_consumed']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'})
+        }

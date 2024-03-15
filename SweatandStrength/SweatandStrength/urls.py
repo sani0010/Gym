@@ -33,6 +33,8 @@ urlpatterns = [
     path('login/', views.Login, name="login"),
     path('navbar/', views.navbar, name='navbar'),
     path('workout/', views.workout, name="workout"),
+    path('track_calories/', views.track_calories, name="track_calories"),
+    
     
 
 
