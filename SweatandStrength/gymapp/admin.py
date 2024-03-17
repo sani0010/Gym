@@ -14,7 +14,7 @@ class WorkoutImageAdmin(admin.TabularInline):
 
 class WorkoutAdmin(admin.ModelAdmin):
     inlines = [WorkoutImageAdmin]
-    list_display = ('title', 'display_video', 'description')
+    list_display = ('title', 'id', 'description')
 
     def display_video(self, obj):
         return format_html('<video width="100" controls><source src="{}" type="video/mp4"></video>', obj.video.url)

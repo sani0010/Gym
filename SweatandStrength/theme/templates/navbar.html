@@ -1,10 +1,8 @@
 {% block navbar %}
 <html lang="en">
 
-
-
-
 <aside class="fixed top-0 left-0 h-screen w-64 bg-white border-r border-gray-200 p-4">
+
     <ul class="space-y-4">
         <li>
             <a href="{% url 'base'%}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
@@ -12,10 +10,10 @@
             </a>
         </li>
         <li>
-            <a href="{% url 'workout' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
+            <a href="{% url 'workout_detail' workout_id=1 %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
                 <span>Workouts</span>
                 <span class="ml-auto bg-gray-100 text-gray-800 rounded-full px-2 text-sm">Pro</span>
-            </a>
+            </a> 
         </li>
 
         <li>
@@ -36,11 +34,13 @@
                         <span>Settings</span>
                     </a>
                     <li>
-                        <a href="{% url 'login' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
+                        <a href="{% url 'base' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
                             <span>Logout</span>
                         </a>
     
 
     </ul>
 </aside>
+
+
 {% endblock %}

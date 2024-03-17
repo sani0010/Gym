@@ -3,11 +3,13 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from .models import  Workout, WorkoutImage, GymTrainerApplication
+from .models import  Workout
 
 from django.shortcuts import render, redirect
 from .forms import trainerform
-from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+
+
 
 
 
@@ -33,9 +35,15 @@ def track_calories(request):
 
 
 
-def workout(request):
-    workouts = Workout.objects.all()
-    return render(request, 'workout.html', {'workouts': workouts})
+# def workout(request):
+#     workouts = Workout.objects.all()
+#     return render(request, 'workout.html', {'workouts': workouts})
+
+def workout_detail(request, workout_id):
+    workout = get_object_or_404(Workout, id=workout_id)
+    print(workout.video.url)
+    return render(request, 'workout_detail.html', {'workout': workout})
+
 
 
 
@@ -44,10 +52,7 @@ def workout(request):
 def Home(request):
     workout = Workout.objects.all()
 
-    context = {
-        "workout": workout
-    }
-    return render(request, "base.html" , context)
+    return render(request, "base.html" , {'workout': workout})
 
 def Signup(request):
     if request.method == "POST":
@@ -111,6 +116,7 @@ def Login(request):
 
 
     return render(request, "login.html")
+
 
 def navbar(request):
     return render(request, 'navbar.html')

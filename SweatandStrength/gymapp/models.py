@@ -1,11 +1,9 @@
 from django.db import models
 from shortuuid.django_fields import ShortUUIDField
-from django.utils.safestring import mark_safe
 from django.contrib.auth.models import User
 
 def user_directory_path(instance, filename):
     return 'workout_videos/{0}'.format(filename)
-
 
 class Workout(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -17,18 +15,15 @@ class Workout(models.Model):
     class Meta:
         verbose_name_plural = "Workout"
 
-    
     def __str__(self):
         return self.title
 
 class WorkoutImage(models.Model):
-    product = models.ForeignKey(Workout, on_delete=models.SET_NULL, null=True)
+    workout = models.ForeignKey(Workout, on_delete=models.CASCADE)  # ForeignKey to establish the connection
     image = models.ImageField(upload_to='workout-images', default="workout.jpg")
 
     class Meta:
         verbose_name_plural = "Workout Images"
-
-
 
 
 
