@@ -6,7 +6,7 @@
 <body class="bg-gray-200">
     
   <div class="container mx-4 p-4"> 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> <!-- Grid layout -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> 
         {% for p in workout %}
             {% for image in p.workoutimage_set.all %}
                 <a href="{% url 'workout_detail' workout_id=p.id %}" class="bg-white rounded-md shadow-md overflow-hidden">

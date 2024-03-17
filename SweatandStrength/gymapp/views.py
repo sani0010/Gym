@@ -1,20 +1,19 @@
 from django.shortcuts import redirect, render
-
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from .models import  Workout
-
 from django.shortcuts import render, redirect
 from .forms import trainerform
 from django.shortcuts import get_object_or_404
-
-
-
-
-
 from .forms import CalorieTrackingForm
 from .models import CalorieTracking
+
+
+
+
+
+
 
 def track_calories(request):
     if request.method == 'POST':
@@ -51,6 +50,10 @@ def Home(request):
     workout = Workout.objects.all()
 
     return render(request, "base.html" , {'workout': workout})
+
+
+
+
 
 def Signup(request):
     if request.method == "POST":
