@@ -2,30 +2,23 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-</head>
 
 <body class="bg-gray-200">
     
-  <div class="container mx-4 p-4 flex flex-wrap"> 
-    {% for p in workout %}
-    <a href="{% url 'workout_detail' workout_id=p.id %}" >click here</a>
-        {% for image in p.workoutimage_set.all %}
-            <div class="w-full md:w-1/2 lg:w-1/4 px-4 mb-5 lg:mb-0 flex-none flex flex-col"> 
-                <div class="bg-white p-4 rounded-md shadow-md"> 
-                    <div style="height: 60%;">  
-                      {% comment %} <a href="{% url 'workout_detail'  %}" > {% endcomment %}
-                        <img class="default-img" src="{{ image.image.url }}" alt="" style="width: 100%; height: auto; max-width: 100%; max-height: 100%;">
-                      {% comment %} </a> {% endcomment %}
-                      <p>{{ p.title }}</p>
+  <div class="container mx-4 p-4"> 
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> <!-- Grid layout -->
+        {% for p in workout %}
+            {% for image in p.workoutimage_set.all %}
+                <a href="{% url 'workout_detail' workout_id=p.id %}" class="bg-white rounded-md shadow-md overflow-hidden">
+                    <img src="{{ image.image.url }}" alt="" class="w-full h-64 object-cover">
+                    <div class="p-4">
+                        <p class="text-lg font-bold">{{ p.title }}</p>
+                        <p class="text-sm">{{ p.description }}</p>
                     </div>
-                </div>
-            </div>
+                </a>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
+    </div>
 </div>
 
 {% endblock %}

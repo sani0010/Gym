@@ -35,9 +35,7 @@ def track_calories(request):
 
 
 
-# def workout(request):
-#     workouts = Workout.objects.all()
-#     return render(request, 'workout.html', {'workouts': workouts})
+
 
 def workout_detail(request, workout_id):
     workout = get_object_or_404(Workout, id=workout_id)
