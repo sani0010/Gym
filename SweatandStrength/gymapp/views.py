@@ -46,10 +46,24 @@ def workout_detail(request, workout_id):
 
 
 # Create your views here.
+from django.db.models import Q
+
 def Home(request):
-    workout = Workout.objects.all()
+    if request.method == 'GET' and 'category' in request.GET:
+        category_id = request.GET.get('category')
+        if category_id == 'easy':
+            workouts = Workout.objects.filter(category__title='Easy')
+        elif category_id == 'medium':
+            workouts = Workout.objects.filter(category__title='Medium')
+        elif category_id == 'hard':
+            workouts = Workout.objects.filter(category__title='Hard')
+        else:
+            workouts = Workout.objects.all()
+    else:
+        workouts = Workout.objects.all()
+        
     categories = Category.objects.all()
-    return render(request, "base.html", {'workout': workout, 'category': categories})
+    return render(request, "base.html", {'workout': workouts, 'category': categories})
 
 
 
