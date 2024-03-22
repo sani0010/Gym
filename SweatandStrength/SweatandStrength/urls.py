@@ -24,6 +24,7 @@ from django.conf.urls.static import static
 
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("gymapp.urls")),
@@ -34,6 +35,7 @@ urlpatterns = [
     path('navbar/', views.navbar, name='navbar'),
     path('workout_detail/<int:workout_id>/', views.workout_detail, name="workout_detail"),
     path('track_calories/', views.track_calories, name="track_calories"),
+
 
 
 
