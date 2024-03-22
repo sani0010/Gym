@@ -22,7 +22,7 @@ class Workout(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     pid = ShortUUIDField(unique=True, length=10, max_length=20, alphabet='abcdefgh12345')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    title = models.CharField(max_length=100, default="san")
+    title = models.CharField(max_length=100)
     video = models.FileField(upload_to=user_directory_path, default="workout.mp4")
     description = models.TextField(null=True, blank=True, default="No description available")
 
