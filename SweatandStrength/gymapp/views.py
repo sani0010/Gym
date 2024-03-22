@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from .models import  Workout
+from .models import  Workout, Category
 from django.shortcuts import render, redirect
 from .forms import trainerform
 from django.shortcuts import get_object_or_404
@@ -48,8 +48,8 @@ def workout_detail(request, workout_id):
 # Create your views here.
 def Home(request):
     workout = Workout.objects.all()
-
-    return render(request, "base.html" , {'workout': workout})
+    categories = Category.objects.all()
+    return render(request, "base.html", {'workout': workout, 'category': categories})
 
 
 

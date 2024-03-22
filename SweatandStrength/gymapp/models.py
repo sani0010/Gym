@@ -5,9 +5,23 @@ from django.contrib.auth.models import User
 def user_directory_path(instance, filename):
     return 'workout_videos/{0}'.format(filename)
 
+
+
+class Category(models.Model):
+    title = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.title
+    
+    
+
 class Workout(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     pid = ShortUUIDField(unique=True, length=10, max_length=20, alphabet='abcdefgh12345')
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=100, default="san")
     video = models.FileField(upload_to=user_directory_path, default="workout.mp4")
     description = models.TextField(null=True, blank=True, default="No description available")
@@ -47,3 +61,7 @@ class CalorieTracking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
     calories_consumed = models.PositiveIntegerField(default=0)
+
+
+
+

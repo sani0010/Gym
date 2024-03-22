@@ -4,21 +4,35 @@
 
 
 <body class="bg-gray-200">
-    
-  <div class="container mx-4 p-4"> 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"> 
-        {% for p in workout %}
-            {% for image in p.workoutimage_set.all %}
-                <a href="{% url 'workout_detail' workout_id=p.id %}" class="bg-white rounded-md shadow-md overflow-hidden">
-                    <img src="{{ image.image.url }}" alt="" class="w-full h-64 object-cover">
-                    <div class="p-4">
-                        <p class="text-lg font-bold">{{ p.title }}</p>
-                        <p class="text-sm">{{ p.description }}</p>
-                    </div>
-                </a>
-            {% endfor %}
-        {% endfor %}
-    </div>
-</div>
 
+    <div class="container mx-4 p-4">
+        <div class="flex justify-end mb-4">
+            <div class="flex space-x-4">
+        
+                <a href="#" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-300 ease-in-out">
+                    Easy
+                </a>
+                
+
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for p in workout %}
+            {% for image in p.workoutimage_set.all %}
+            <a href="{% url 'workout_detail' workout_id=p.id %}" class="bg-white rounded-md shadow-md overflow-hidden">
+                <img src="{{ image.image.url }}" alt="" class="w-full h-64 object-cover">
+                <div class="p-4">
+                    <p class="text-lg font-bold">{{ p.category.title }}</p>
+                    <p class="text-lg font-bold">{{ p.title }}</p>
+                    <p class="text-sm">{{ p.description }}</p>
+                </div>
+            </a>
+            {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+
+</html>
 {% endblock %}

@@ -35,6 +35,8 @@ urlpatterns = [
     path('workout_detail/<int:workout_id>/', views.workout_detail, name="workout_detail"),
     path('track_calories/', views.track_calories, name="track_calories"),
 
+
+
     
     
 
