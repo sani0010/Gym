@@ -14,7 +14,6 @@ from .models import CalorieTracking
 
 
 
-
 def track_calories(request):
     if request.method == 'POST':
         form = CalorieTrackingForm(request.POST)
@@ -45,8 +44,6 @@ def workout_detail(request, workout_id):
 
 
 
-# Create your views here.
-from django.db.models import Q
 
 def Home(request):
     if request.method == 'GET' and 'category' in request.GET:
@@ -65,6 +62,9 @@ def Home(request):
     categories = Category.objects.all()
     return render(request, "base.html", {'workout': workouts, 'category': categories})
 
+
+def Splash(request):
+    return render(request, "splash.html")
 
 
 
@@ -127,7 +127,7 @@ def Login(request):
         # Login the user
         login(request, user)
         messages.success(request, "You have been successfully logged in")
-        return redirect("base")
+        return redirect("splash")
 
 
     return render(request, "login.html")

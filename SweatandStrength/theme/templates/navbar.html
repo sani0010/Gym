@@ -1,51 +1,53 @@
+{% load static %}
 {% block navbar %}
 <html lang="en">
 
-<aside class="fixed top-0 left-0 h-screen w-64 bg-amber-200 border-r border-gray-200 p-4">
+<aside class="fixed top-0 left-0  h-screen w-64 bg-white border-r border-gray-200 p-4">
 
-    <ul class="space-y-4">
+    <ul class="space-y-4 ">
         <li>
-            <a href="{% url 'base'%}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
+            <a href="{% url 'splash' %}" class="flex items-center p-2 text-gray-900 rounded-lg ">
+                <span class="text-orange-500 font-bold">Sweat & Strength</span>
+            </a>
+            <hr class="my-3 border-t border-gray-200"> 
+        </li>
+        <li>
+            <a href="{% url 'splash'%}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
                 <span>Home</span>
             </a>
         </li>
         <li>
-            <a href="{% url 'workout_detail' workout_id=3 %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
+            <a href="{% url 'base' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
                 <span>Workouts</span>
             </a> 
         </li>
-
         <li>
-            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
+            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
                 <span>Trainer</span>
             </a>
         </li>
         <li>
-            <a href="{% url 'track_calories' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
+            <a href="{% url 'track_calories' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
                 <span>Calorie</span>
             </a>
-            <li>
-                <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
-                    <span>Subscription</span>
-                </a>
-                <li>
-                    <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
-                        <span>Settings</span>
-                    </a>
-                    <li>
-                        <a href="{% url 'base' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-blue-100">
-                            <span>Logout</span>
-                        </a>
-    
-
+        </li>
+        <li>
+            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+                <span>Subscription</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+                <span>Settings</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'base' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+                <span>Logout</span>
+            </a>
+        </li>
     </ul>
 </aside>
 
 
 {% endblock %}
-
-
-
-
-
-                           

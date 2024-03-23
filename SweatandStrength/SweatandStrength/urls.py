@@ -30,6 +30,7 @@ urlpatterns = [
     path('', include("gymapp.urls")),
     path('_reload_/', include('django_browser_reload.urls')),
     path('base/', views.Home, name="base"),
+    path('splash/', views.Splash, name="splash"),
     path('signup/', views.Signup, name="signup"),
     path('login/', views.Login, name="login"),
     path('navbar/', views.navbar, name='navbar'),
