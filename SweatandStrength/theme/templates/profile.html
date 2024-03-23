@@ -1,64 +1,75 @@
 {% load static tailwind_tags %}
 {% tailwind_css %}
-{% block content %}
+{% block profile %}
 
-<div class="max-w-4xl mx-auto px-4 py-8">
-    <div class="mb-4">
-        <button id="profileBtn" class="py-2 px-4 mr-2 bg-blue-600 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">Profile</button>
-        <button id="accountBtn" class="py-2 px-4 bg-blue-600 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">Account</button>
-    </div>
-    
-    <div id="profileSection">
-        <h1 class="text-2xl font-bold mb-4">Profile</h1>
-        
-        <form action="" method="POST" class="space-y-4">
-            {% csrf_token %}
-            <div>
-                <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
-                <input type="text" id="first_name" name="first_name" value="{{ user.username }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-            </div>
-            <div>
-                <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
-                <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-            </div>
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                <input type="email" id="email" name="email" value="{{ user.email }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-            </div>
-            <div>
-                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
-            </div>
-        </form>
+{% include 'topnav.html' %}
+
+<div class="flex">
+
+    <div class="w-64 bg-white">
+        {% include 'navbar.html' %}
     </div>
 
-    <div id="accountSection" style="display:none;">
-        <!-- Account Info -->
-        <div class="mt-8">
-            <h2 class="text-lg font-bold mb-4">Create Password</h2>
-            <form action="" method="POST" class="space-y-4">
-                {% csrf_token %}
-                <div>
-                    <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
-                    <input type="password" id="new_password" name="new_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                </div>
-                <div>
-                    <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                </div>
-                <div>
-                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Create Password</button>
-                </div>
-            </form>
-        </div>
+    <div class="flex-grow">
+        <div class="max-w-4xl mx-auto px-4 py-8">
+            <div class="mb-4">
+                <button id="profileBtn" class="py-2 px-4 mr-2 bg-blue-600 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">Profile</button>
+                <button id="accountBtn" class="py-2 px-4 bg-blue-600 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">Account</button>
+            </div>
+            
+            <div id="profileSection">
+                <h1 class="text-2xl font-bold mb-4">Profile</h1>
+                
+                <form action="" method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    <div>
+                        <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ user.username }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                    </div>
+                    <div>
+                        <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                    </div>
+                    <div>
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
+                    </div>
+                </form>
+            </div>
 
-        <!-- Delete Account -->
-        <div class="mt-8">
-            <h2 class="text-lg font-bold mb-4">Delete Account</h2>
-            <p class="text-sm text-gray-700">No longer want to use our service? You can delete your account here. This action is not reversible. All information related to this account will be deleted permanently.</p>
-            <form action="" method="POST">
-                {% csrf_token %}
-                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Yes, delete my account</button>
-            </form>
+            <div id="accountSection" style="display:none;">
+                <!-- Account Info -->
+                <div class="mt-8">
+                    <h2 class="text-lg font-bold mb-4">Create Password</h2>
+                    <form action="" method="POST" class="space-y-4">
+                        {% csrf_token %}
+                        <div>
+                            <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
+                            <input type="password" id="new_password" name="new_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Create Password</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Delete Account -->
+                <div class="mt-8">
+                    <h2 class="text-lg font-bold mb-4">Delete Account</h2>
+                    <p class="text-sm text-gray-700">No longer want to use our service? You can delete your account here. This action is not reversible. All information related to this account will be deleted permanently.</p>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Yes, delete my account</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
