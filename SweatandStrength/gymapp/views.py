@@ -8,6 +8,7 @@ from .forms import trainerform
 from django.shortcuts import get_object_or_404
 from .forms import CalorieTrackingForm
 from .models import CalorieTracking
+from django.contrib.auth import logout
 
 
 
@@ -61,6 +62,15 @@ def Home(request):
         
     categories = Category.objects.all()
     return render(request, "base.html", {'workout': workouts, 'category': categories})
+
+
+
+
+def logout_view(request):  # Define the logout view
+    logout(request)  # Logout the user
+    messages.success(request, "You have been successfully logged out")
+    return redirect("splash")
+
 
 
 def Splash(request):

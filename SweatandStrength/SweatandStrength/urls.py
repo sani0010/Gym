@@ -19,7 +19,7 @@ from django.urls import path,include
 from gymapp import views
 from django.conf import settings
 from django.conf.urls.static import static
-
+from gymapp.views import logout_view
 
 
 
@@ -36,6 +36,7 @@ urlpatterns = [
     path('navbar/', views.navbar, name='navbar'),
     path('workout_detail/<int:workout_id>/', views.workout_detail, name="workout_detail"),
     path('track_calories/', views.track_calories, name="track_calories"),
+    path('logout/', logout_view, name='logout'), 
 
 
 

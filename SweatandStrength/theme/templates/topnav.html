@@ -39,7 +39,7 @@
     var userAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
     var username = "{{ user.username }}";
     var capitalizedUsername = username.charAt(0).toUpperCase() + username.slice(1); // Capitalizing the first letter
-    var userGreeting = userAuthenticated ? '<strong>Welcome back,</strong> ' + capitalizedUsername : 'Welcome';
+    var userGreeting = userAuthenticated ? '<strong>Welcome back,</strong> ' + capitalizedUsername : '<strong>Welcome</strong> ';
 
     // Combine the time-based greeting and the user-based greeting with a line break
     var fullGreeting = timeGreeting + '<br>' + userGreeting;
