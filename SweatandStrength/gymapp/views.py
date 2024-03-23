@@ -42,7 +42,8 @@ def workout_detail(request, workout_id):
     return render(request, 'workout_detail.html', {'workout': workout})
 
 
-
+def profile(request):
+    return render(request, 'profile.html')
 
 
 

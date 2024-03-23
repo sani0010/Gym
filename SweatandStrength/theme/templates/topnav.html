@@ -1,4 +1,5 @@
-{% load static %}
+{% load static tailwind_tags %}
+{% tailwind_css %}
 {% block topnav %}
 
 <div class="flex">
@@ -15,8 +16,19 @@
             <input type="text" placeholder="Search..." class="border border-gray-300 px-3 py-2 rounded-lg w-full max-w-md focus:outline-none focus:ring focus:border-blue-400">
         </div>
 
-        <div class="flex items-center space-x-4">
-            <a href="#" class="text-gray-900 hover:text-blue-500 px-3 py-2">Profile</a>
+        <div class="flex items-center space-x-4 relative">
+            <div class="relative">
+                <a href="#" class="text-gray-900 hover:text-blue-500 px-3 py-2" id="profileBtn">Profile</a>
+                <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                    {% if user.is_authenticated %}
+                        <a href="" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+                        <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Login</a>
+                        <a href="{% url 'signup' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Signup</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </nav>
 </div>
@@ -46,6 +58,21 @@
 
     // Set the greeting in the HTML
     document.getElementById('greeting').innerHTML = fullGreeting;
+
+    // Toggle dropdown menu
+    document.getElementById('profileBtn').addEventListener('click', function() {
+        var dropdown = document.getElementById('profileDropdown');
+        dropdown.classList.toggle('hidden');
+    });
+
+    // Close dropdown when clicking outside of it
+    window.addEventListener('click', function(event) {
+        var dropdown = document.getElementById('profileDropdown');
+        var profileBtn = document.getElementById('profileBtn');
+        if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+    });
 </script>
 
 {% endblock %}
