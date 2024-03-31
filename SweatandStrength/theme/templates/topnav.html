@@ -3,76 +3,122 @@
 {% block topnav %}
 
 <div class="flex">
-    <div class="w-64 bg-white p-4">
-        {% include 'navbar.html' %}
-    </div>
 
-    <nav class="topnav fixed top-0 left-64 right-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between flex-grow">
+  <div>
+    {% include 'navbar.html' %}
+    <div>
+      <nav
+        class="topnav w-full mb-20 h-18 fixed top-0 right-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between flex-grow"
+      >
+        <!-- Hamburger menu button -->
+        <button class="md:hidden text-gray-900 hover:text-blue-500 focus:outline-none" id="menuBtn">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+          </svg>
+        </button>
+
         <div class="flex items-center">
-            <span class="text-gray-900 pr-3" id="greeting"></span>
+          <span class="text-gray-900 pr-3" id="greeting"></span>
         </div>
 
         <div class="flex-grow flex justify-center">
-            <input type="text" placeholder="Search..." class="border border-gray-300 px-3 py-2 rounded-lg w-full max-w-md focus:outline-none focus:ring focus:border-blue-400">
+          <input
+            type="text"
+            placeholder="Search..."
+            class="border border-gray-300 px-3 py-2 rounded-lg w-full max-w-md focus:outline-none focus:ring focus:border-blue-400"
+          />
         </div>
 
         <div class="flex items-center space-x-4 relative">
-            <div class="relative">
-                <a href="#" class="text-gray-900 hover:text-blue-500 px-3 py-2" id="profileBtn">Profile</a>
-                <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                        <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Login</a>
-                        <a href="{% url 'signup' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Signup</a>
-                    {% endif %}
-                </div>
+          <div class="relative">
+            <a
+              href="#"
+              class="text-gray-900 hover:text-blue-500 px-3 py-2"
+              id="profileBtn"
+              >Profile</a
+            >
+            <div
+              id="profileDropdown"
+              class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10"
+            >
+              {% if user.is_authenticated %}
+              <a
+                href="{% url 'profile' %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >Profile</a
+              >
+              <a
+                href="{% url 'logout' %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >Sign out</a
+              >
+              {% else %}
+              <a
+                href="{% url 'login' %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >Login</a
+              >
+              <a
+                href="{% url 'signup' %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >Signup</a
+              >
+              {% endif %}
             </div>
+          </div>
         </div>
-    </nav>
+      </nav>
+    </div>
+
+    <script>
+      // Get current hour
+      var currentHour = new Date().getHours();
+
+      // Determine the time-based greeting
+      var timeGreeting = '';
+      if (currentHour >= 5 && currentHour < 12) {
+          timeGreeting = '<span style="font-size: smaller;">Good Morning</span>';
+      } else if (currentHour >= 12 && currentHour < 18) {
+          timeGreeting = '<span style="font-size: smaller;">Good Afternoon</span>';
+      } else {
+          timeGreeting = '<span style="font-size: smaller;">Good Evening</span>';
+      }
+
+      // Determine the user-based greeting
+      var userAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+      var username = "{{ user.username }}";
+      var capitalizedUsername = username.charAt(0).toUpperCase() + username.slice(1); // Capitalizing the first letter
+      var userGreeting = userAuthenticated ? '<strong>Welcome back,</strong> ' + capitalizedUsername : '<strong>Welcome</strong> ';
+
+      // Combine the time-based greeting and the user-based greeting with a line break
+      var fullGreeting = timeGreeting + '<br>' + userGreeting;
+
+      // Set the greeting in the HTML
+      document.getElementById('greeting').innerHTML = fullGreeting;
+
+      // Toggle dropdown menu
+      document.getElementById('profileBtn').addEventListener('click', function() {
+          var dropdown = document.getElementById('profileDropdown');
+          dropdown.classList.toggle('hidden');
+      });
+
+      // Toggle menu on small screens
+      document.getElementById('menuBtn').addEventListener('click', function() {
+          var nav = document.querySelector('.topnav');
+          nav.classList.toggle('open');
+      });
+
+      // Close dropdown when clicking outside of it
+      window.addEventListener('click', function(event) {
+          var dropdown = document.getElementById('profileDropdown');
+          var profileBtn = document.getElementById('profileBtn');
+          if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
+              dropdown.classList.add('hidden');
+          }
+      });
+    </script>
+
+  </div>
 </div>
-
-<script>
-    // Get current hour
-    var currentHour = new Date().getHours();
-
-    // Determine the time-based greeting
-    var timeGreeting = '';
-    if (currentHour >= 5 && currentHour < 12) {
-        timeGreeting = '<span style="font-size: smaller;">Good Morning</span>';
-    } else if (currentHour >= 12 && currentHour < 18) {
-        timeGreeting = '<span style="font-size: smaller;">Good Afternoon</span>';
-    } else {
-        timeGreeting = '<span style="font-size: smaller;">Good Evening</span>';
-    }
-
-    // Determine the user-based greeting
-    var userAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
-    var username = "{{ user.username }}";
-    var capitalizedUsername = username.charAt(0).toUpperCase() + username.slice(1); // Capitalizing the first letter
-    var userGreeting = userAuthenticated ? '<strong>Welcome back,</strong> ' + capitalizedUsername : '<strong>Welcome</strong> ';
-
-    // Combine the time-based greeting and the user-based greeting with a line break
-    var fullGreeting = timeGreeting + '<br>' + userGreeting;
-
-    // Set the greeting in the HTML
-    document.getElementById('greeting').innerHTML = fullGreeting;
-
-    // Toggle dropdown menu
-    document.getElementById('profileBtn').addEventListener('click', function() {
-        var dropdown = document.getElementById('profileDropdown');
-        dropdown.classList.toggle('hidden');
-    });
-
-    // Close dropdown when clicking outside of it
-    window.addEventListener('click', function(event) {
-        var dropdown = document.getElementById('profileDropdown');
-        var profileBtn = document.getElementById('profileBtn');
-        if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
-            dropdown.classList.add('hidden');
-        }
-    });
-</script>
 
 {% endblock %}

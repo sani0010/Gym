@@ -1,23 +1,21 @@
-{% load static %}
-{% load tailwind_tags %}
-{% tailwind_css %}
+{% load static %} 
+{% load tailwind_tags %} 
+{% tailwind_css %} 
 {% include 'topnav.html' %}
 
-<div class="mt-16 flex">
-    <div class="w-64 bg-white p-4">
-        {% include 'navbar.html' %}
-    </div>
+<div class="mt-16 flex flex-col md:flex-row">
+  <div class="md:w-64">
+    {% include 'navbar.html' %}
+  </div>
 
-
-    <div class="relative flex-1 max-h-[500px] p-4">
-        <div class="absolute inset-0 text-gray-200 flex flex-col justify-center">
-            <h1 class="px-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">
-                <span class="text-indigo-500"></span>
-            </h1>
-            <h1 class="px-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold">
-                <span class="text-indigo-500"></span>
-            </h1>
-        </div>
-        <img class="w-1/2 h-full object-cover right-0" src="{% static 'assets/img/one.png' %}" alt="Image" />
+  <div class="flex-1 p-5">
+    <div class="w-full md:w-[64%] h-[32%] md:h-[50%] rounded-xl">
+      <img
+        class="object-cover rounded-xl w-full h-full"
+        src="{% static 'assets/img/one.png' %}"
+        alt="Image"
+      />
     </div>
+  </div>
+  
 </div>

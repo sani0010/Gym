@@ -1,52 +1,59 @@
 {% load static %}
 {% block navbar %}
-<html lang="en">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-<aside class="fixed top-0 left-0  h-screen w-64 bg-white border-r border-gray-200 p-4">
-
+<aside class="hidden md:block  fixed top-0 left-0 h-screen md:w-64 bg-white border-r border-gray-200 p-4">
     <ul class="space-y-4 ">
         <li>
             <a href="{% url 'splash' %}" class="flex items-center p-2 text-gray-900 rounded-lg ">
+                <i class="fas fa-dumbbell text-orange-500 mr-5"></i>
                 <span class="text-orange-500 font-bold">Sweat & Strength</span>
             </a>
             <hr class="my-3 border-t border-gray-200"> 
         </li>
         <li>
             <a href="{% url 'splash'%}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+                <i class="fas fa-home text-gray-600 mr-5"></i>
                 <span>Home</span>
             </a>
         </li>
         <li>
             <a href="{% url 'base' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+                <i class="fas fa-dumbbell text-gray-600 mr-4"></i>
                 <span>Workouts</span>
             </a> 
         </li>
         <li>
             <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+                <i class="fas fa-user text-gray-600 mr-5"></i>
                 <span>Trainer</span>
             </a>
         </li>
         <li>
             <a href="{% url 'track_calories' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+                <i class="fas fa-fire text-gray-600 mr-5"></i>
                 <span>Calorie</span>
             </a>
         </li>
         <li>
             <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+                <i class="fas fa-credit-card text-gray-600 mr-5"></i>
                 <span>Subscription</span>
             </a>
         </li>
         <li>
             <a href="{% url 'profile' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+                <i class="fas fa-cog text-gray-600 mr-5"></i>
                 <span>Settings</span>
             </a>
         </li>
-        <li>
+        <div class="fixed bottom-0 w-64 left-0 p-4">
+            <hr class="my-3 border-t border-gray-200"> 
             <a href="{% url 'logout' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+                <i class="fas fa-sign-out-alt text-gray-600 mr-5"></i>
                 <span>Logout</span>
             </a>
-        </li>
-        
+        </div>
     </ul>
 </aside>
 
