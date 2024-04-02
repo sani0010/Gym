@@ -5,22 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% tailwind_css %}
+    <!-- CSS -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+<!-- Default theme -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 </head>
 
-<div class="bg-gray-100 min-h-screen">
-
-    {% include 'topnav.html' %}
-
-
-<body class="bg-gray-100 min-h-screen">
-    <div class="flex">
-        <div class="w-64 bg-white p-4">
-            {% include 'navbar.html' %}
-        </div>
-
-
-
-        
         <div class="flex-grow p-4">
             <h1 class="text-4xl font-bold mb-8"></h1>
             <div class="content">
@@ -30,6 +20,13 @@
             </div>
         </div>
     </div>
-
+<!-- Alert JavaScript -->
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+<script>
+    {% for flashmsg in messages %}
+        alertify.set('notifier','position', 'top-right');
+        alertify.success('{{flashmsg}}');
+    {% endfor %}
+</script>
 </body>
 </html> 
