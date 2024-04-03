@@ -1,15 +1,9 @@
 {% load static tailwind_tags %}
 {% tailwind_css %}
 {% block topnav %}
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <div class="flex">
-
-  <div>
-    {% include 'navbar.html' %}
-    <div>
-      <nav
-        class="topnav w-full mb-20 h-18 fixed top-0 right-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between flex-grow"
-      >
+      <nav class="topnav w-full mb-20 h-18 fixed top-0 right-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between flex-grow">
         <!-- Hamburger menu button -->
         <button class="md:hidden text-gray-900 hover:text-blue-500 focus:outline-none" id="menuBtn">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -18,7 +12,7 @@
         </button>
 
         <div class="flex items-center">
-          <span class="text-gray-900 pr-3" id="greeting"></span>
+          <span class="text-gray-900 ml-64" id="greeting"></span>
         </div>
         <div class="flex-grow flex justify-center">
           <input
@@ -68,6 +62,65 @@
         </div>
       </nav>
     </div>
+  </div>
+
+  <!-- Left Navbar -->
+  <nav class="navbar hidden md:block  fixed top-0 left-0 h-screen md:w-64 bg-white border-r border-gray-200 p-4">
+    <ul class="space-y-4">
+      <li>
+        <a href="{% url 'splash' %}" class="flex items-center p-2 text-gray-900 rounded-lg ">
+          <i class="fas fa-dumbbell text-orange-500 mr-5"></i>
+          <span class="text-orange-500 font-bold">Sweat & Strength</span>
+        </a>
+        <hr class="my-3 border-t border-gray-200"> 
+      </li>
+      <li>
+        <a href="{% url 'splash'%}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+          <i class="fas fa-home text-gray-600 mr-5"></i>
+          <span>Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'base' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+          <i class="fas fa-dumbbell text-gray-600 mr-4"></i>
+          <span>Workouts</span>
+        </a> 
+      </li>
+      <li>
+        <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+          <i class="fas fa-user text-gray-600 mr-5"></i>
+          <span>Trainer</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'track_calories' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+          <i class="fas fa-fire text-gray-600 mr-5"></i>
+          <span>Calorie</span>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+          <i class="fas fa-credit-card text-gray-600 mr-5"></i>
+          <span>Subscription</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'profile' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+          <i class="fas fa-cog text-gray-600 mr-5"></i>
+          <span>Settings</span>
+        </a>
+      </li>
+      <div class="fixed bottom-0 w-64 left-0 p-4">
+        <hr class="my-3 border-t border-gray-200"> 
+        <a href="{% url 'logout' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+          <i class="fas fa-sign-out-alt text-gray-600 mr-5"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </ul>
+  </nav>
+</div>
+
 
     <script>
       // Get current hour
@@ -101,12 +154,18 @@
           dropdown.classList.toggle('hidden');
       });
 
-      // Toggle menu on small screens
       document.getElementById('menuBtn').addEventListener('click', function() {
-          var nav = document.querySelector('.topnav');
-          nav.classList.toggle('open');
-      });
-
+        console.log('Menu button clicked');
+        var nav = document.querySelector('nav.navbar');
+        if (nav) {
+            console.log('Nav element found:', nav);
+            nav.classList.toggle('open');
+            console.log('Nav class toggled:', nav.classList.contains('open'));
+        } else {
+            console.error("Navbar element not found.");
+        }
+    });
+    
       // Close dropdown when clicking outside of it
       window.addEventListener('click', function(event) {
           var dropdown = document.getElementById('profileDropdown');
