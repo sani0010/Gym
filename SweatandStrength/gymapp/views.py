@@ -9,8 +9,33 @@ from django.shortcuts import get_object_or_404
 from .forms import CalorieTrackingForm
 from .models import CalorieTracking
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from .models import UserProfile
+from .forms import ProfilePictureForm
+
+def profile_view(request):
+    if request.method == 'POST':
+        form = ProfilePictureForm(request.POST, request.FILES)
+        if form.is_valid():
+            user_profile = form.save(commit=False)
+            user_profile.user = request.user
+            user_profile.save()
+            return redirect('profile_success')  
+    else:
+        form = ProfilePictureForm()
+    return render(request, 'profile.html', {'form': form})
 
 
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        messages.success(request, 'Your account has been deleted successfully.')
+        return redirect('base') 
+    return render(request, 'delete_account.html')
 
 
 
@@ -132,7 +157,7 @@ def Login(request):
 
         # Check if the user exists
         if user is None:
-            messages.error(request, "User does not exist")
+            messages.error(request, "User dose not exist")
             return redirect("login")
 
         # Login the user
