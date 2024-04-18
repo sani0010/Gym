@@ -2,6 +2,8 @@ from django.db import models
 from shortuuid.django_fields import ShortUUIDField
 from django.contrib.auth.models import User
 
+
+
 def user_directory_path(instance, filename):
     return 'workout_videos/{0}'.format(filename)
 
@@ -37,6 +39,7 @@ class Workout(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class WorkoutImage(models.Model):
     workout = models.ForeignKey(Workout, on_delete=models.CASCADE)  # ForeignKey to establish the connection

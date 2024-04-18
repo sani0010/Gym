@@ -19,6 +19,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 
+
+#change password
 @login_required
 def create_password(request):
     if request.method == 'POST':
@@ -38,6 +40,8 @@ def create_password(request):
 
     return render(request, 'create_password.html')
 
+
+
 #delete account successful
 @login_required
 def delete_account(request):
@@ -49,24 +53,6 @@ def delete_account(request):
     return render(request, 'delete_account.html')
 
 
-#change password
-@login_required
-def change_password_view(request):
-    if request.method == 'POST':
-        form = PasswordChangeForm(request.user, request.POST)
-        if form.is_valid():
-            user = form.save()
-            # Important: to keep the user logged in after changing the password
-            update_session_auth_hash(request, user)
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect('profile')  # Redirect to profile page after successful password change
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field}: {error}")
-    else:
-        form = PasswordChangeForm(request.user)
-    return render(request, 'change_password.html', {'form': form})
 
 #calorie tracking
 def track_calories(request):
@@ -95,7 +81,7 @@ def workout_detail(request, workout_id):
     print(workout.video.url)
     return render(request, 'workout_detail.html', {'workout': workout})
 
-
+#Settings page
 def profile(request):
     return render(request, 'profile.html')
 
@@ -127,7 +113,7 @@ def logout_view(request):
     return redirect("splash")
 
 
-
+#home page
 def Splash(request):
     return render(request, "splash.html")
 
@@ -165,7 +151,7 @@ def Signup(request):
     return render(request, "signup.html")
 
 
-
+#login the user
 def Login(request):
     if request.method == "POST":
         username = request.POST['username']
