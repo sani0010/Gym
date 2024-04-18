@@ -14,11 +14,38 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Profile
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import UserProfile
 
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        profile_picture = request.FILES.get('profile_picture')
+
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.save()
+
+        if profile_picture:
+            user_profile, created = UserProfile.objects.get_or_create(user=user)
+            user_profile.profile_picture = profile_picture
+            user_profile.save()
+
+        messages.success(request, 'Profile updated successfully.')
+        return redirect('profile')
+
+    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
+    return render(request, 'profile.html', {'profile_picture_url': profile_picture_url})
 
 #change password
 @login_required
@@ -68,7 +95,9 @@ def track_calories(request):
         form = CalorieTrackingForm()
     
     calorie_entries = CalorieTracking.objects.filter(user=request.user)
-    return render(request, 'track_calories.html', {'form': form, 'calorie_entries': calorie_entries})
+    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
+    return render(request, 'track_calories.html', {'form': form, 'calorie_entries': calorie_entries, 'profile_picture_url': profile_picture_url})
+
 
 
 
@@ -102,7 +131,8 @@ def Home(request):
         workouts = Workout.objects.all()
         
     categories = Category.objects.all()
-    return render(request, "base.html", {'workout': workouts, 'category': categories})
+    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
+    return render(request, "base.html", {'workout': workouts, 'category': categories, 'profile_picture_url': profile_picture_url})
 
 
 
@@ -115,7 +145,9 @@ def logout_view(request):
 
 #home page
 def Splash(request):
-    return render(request, "splash.html")
+    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
+    return render(request, 'splash.html', {'profile_picture_url': profile_picture_url})
+
 
 
 
