@@ -12,22 +12,33 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import UserProfile
-from .forms import ProfilePictureForm
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Profile
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.hashers import make_password
 
-def profile_view(request):
+@login_required
+def create_password(request):
     if request.method == 'POST':
-        form = ProfilePictureForm(request.POST, request.FILES)
-        if form.is_valid():
-            user_profile = form.save(commit=False)
-            user_profile.user = request.user
-            user_profile.save()
-            return redirect('profile_success')  
-    else:
-        form = ProfilePictureForm()
-    return render(request, 'profile.html', {'form': form})
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
 
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'create_password.html')
 
+        user = request.user
+        user.password = make_password(new_password)
+        user.save()
+        update_session_auth_hash(request, user)
+        messages.success(request, 'Password Changed successfully.')
+        return redirect('profile')
+
+    return render(request, 'create_password.html')
+
+#delete account successful
 @login_required
 def delete_account(request):
     if request.method == 'POST':
@@ -38,8 +49,26 @@ def delete_account(request):
     return render(request, 'delete_account.html')
 
 
+#change password
+@login_required
+def change_password_view(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Important: to keep the user logged in after changing the password
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('profile')  # Redirect to profile page after successful password change
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'change_password.html', {'form': form})
 
-
+#calorie tracking
 def track_calories(request):
     if request.method == 'POST':
         form = CalorieTrackingForm(request.POST)
@@ -60,7 +89,7 @@ def track_calories(request):
 
 
 
-
+#workout detail with id
 def workout_detail(request, workout_id):
     workout = get_object_or_404(Workout, id=workout_id)
     print(workout.video.url)
@@ -71,7 +100,7 @@ def profile(request):
     return render(request, 'profile.html')
 
 
-
+#filtering the workout based on category
 def Home(request):
     if request.method == 'GET' and 'category' in request.GET:
         category_id = request.GET.get('category')
@@ -91,9 +120,9 @@ def Home(request):
 
 
 
-
-def logout_view(request):  # Define the logout view
-    logout(request)  # Logout the user
+# logout the user
+def logout_view(request): 
+    logout(request) 
     messages.success(request, "You have been successfully logged out")
     return redirect("splash")
 
@@ -104,7 +133,7 @@ def Splash(request):
 
 
 
-
+#Creating new user
 def Signup(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -112,7 +141,7 @@ def Signup(request):
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
-        # Check if the username is empty
+        
         if not username:
             messages.error(request, "Username cannot be empty")
             return redirect("signup")
@@ -142,7 +171,7 @@ def Login(request):
         username = request.POST['username']
         password = request.POST['password']
 
-        # Check if the username is empty
+        
         if not username:
             messages.error(request, "Username cannot be empty")
             return redirect("login")
@@ -169,13 +198,14 @@ def Login(request):
     return render(request, "login.html")
 
 
+#navbar
 def navbar(request):
     return render(request, 'navbar.html')
 
 
 
 
-
+#Trainer form
 def apply_for_trainer(request):
     form = trainerform()
     if request.method == 'POST':

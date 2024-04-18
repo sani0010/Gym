@@ -3,6 +3,10 @@
 
 {% include 'topnav.html' %}
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+<!-- Default theme -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+
     <div class="ml-[18rem]">
         <div class="mt-16 p-4 ">
         </div>
@@ -10,22 +14,19 @@
         <div class="flex justify-between relative">
             <div id="profileSection">
 
-                <form action="" method="POST" class="space-y-4 flex flex-col">
+                <form action="" method="POST" class="space-y-4 flex flex-col" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="flex-col space-y-4">
                         <div class="flex justify-start">
-                            
                             <div>
-                                <img src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" class="w-36 h-36 rounded-full mx-auto">
-                            </div>    
-                            <div class="flex-col ml-10 items-center mb-10 ">  
-                            <h1 class="text-2xl font-bold  my-5">Profile</h1>    
-                            <div class="my-9">
-                                <form id="profilePictureForm" enctype="multipart/form-data">
+                                <img id="profilePicturePreview" src="{{ profile_picture_url }}" alt="Profile Picture" class="w-36 h-36 rounded-full mx-auto">
+                            </div>
+                            <div class="flex-col ml-10 items-center mb-10">
+                                <h1 class="text-2xl font-bold my-5">Profile</h1>
+                                <div class="my-9">
                                     <input type="file" id="profilePictureInput" name="profile_picture" class="hidden">
                                     <label for="profilePictureInput" class="flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-blue-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Change Profile Picture</label>
-                                    <button type="submit" class="hidden"></button>
-                                </div>  
+                                </div>
                             </div>
                         </div>
                         <div class="flex space-x-8 ml-12 ">
@@ -43,9 +44,9 @@
                         <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
                         <input type="email" id="email" name="email" value="{{ user.email }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                     </div>
-                    <div class="flex justify-end "> 
+                    <div class="flex justify-end">
                         <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
-                    </div> 
+                    </div>
                 </form>
             </div> 
             <div class="mr-6 absolute right-2 ">
@@ -57,7 +58,7 @@
         <div id="accountSection" style="display:none;">
             <div class="mt-8">
                 <h2 class="text-lg font-bold mb-4">Create Password</h2>
-                <form action="" method="POST" class="space-y-4">
+                <form action="{% url 'create_password' %}" method="POST" class="space-y-4">
                     {% csrf_token %}
                     <div>
                         <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
@@ -68,7 +69,9 @@
                         <input type="password" id="confirm_password" name="confirm_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                     </div>
                     <div>
-                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Create Password</button>
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Create Password
+                        </button>
                     </div>
                 </form>
             </div>
@@ -85,9 +88,70 @@
 </div>
 
 </div>
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+<script>
+    {% for flashmsg in messages %}
+        alertify.set('notifier','position', 'top-right');
+        alertify.success('{{flashmsg}}');
+    {% endfor %}
+</script>
 
 <script>
+    // Function to handle file input change event
+    function handleFileInputChange() {
+        var fileInput = document.getElementById("profilePictureInput");
+        var imgElement = document.getElementById("profilePicturePreview");
+        if (fileInput.files && fileInput.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                imgElement.src = e.target.result;
+            }
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
 
+    // Add event listener to the profile picture input
+    document.getElementById("profilePictureInput").addEventListener("change", handleFileInputChange);
+
+    // Function to handle form submission
+    function handleSubmit(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+        
+        // Get the form element
+        var form = document.getElementById("profilePictureForm");
+        
+        // Fetch API endpoint for saving profile data
+        var url = form.getAttribute("action");
+        
+        // Prepare form data
+        var formData = new FormData(form);
+
+        // Make a POST request to save profile data
+        fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Redirect or show success message upon successful save
+                window.location.href = "{% url 'profile' %}";
+            } else {
+                // Handle error response
+                console.error('Error saving profile data');
+            }
+        })
+        .catch(error => {
+            console.error('Error saving profile data:', error);
+        });
+    }
+
+    // Add event listener to the form submission button
+    document.getElementById("profilePictureForm").addEventListener("submit", handleSubmit);
+</script> 
+<script>
     document.getElementById("profileBtn").addEventListener("click", function() {
         document.getElementById("profileSection").style.display = "block";
         document.getElementById("accountSection").style.display = "none";
@@ -97,4 +161,4 @@
         document.getElementById("profileSection").style.display = "none";
         document.getElementById("accountSection").style.display = "block";
     });
-</script>  
+</script>
