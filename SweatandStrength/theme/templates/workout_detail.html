@@ -1,62 +1,48 @@
 {% load static tailwind_tags %}
 {% tailwind_css %}
 {% block workout_detail %}
-
 {% include 'topnav.html' %}
-
-
 <div class="flex">
-
     <div class="md:w-64">
-
-      </div>
-
-    <div class="p-20 flex-grow border">
-        <div class="border h-[70%] rounded-lg flex  space-x-2">
-            <video controls class="w-[70%] object-cover rounded-lg">  
-                <source src="{{ workout.video.url }}" type="video/mp4">
-            </video>
-
-            <div class="border w-[30%] overflow-x-auto">
-                <div class="border py-2 px-2 space-y-1">
-                    <div>Image</div>
-                    <div>Title</div>
-                    <div>Time</div>
-                </div>
-                <div class="border py-2 px-2 space-y-1">
-                  <div>Image</div>
-                  <div>Title</div>
-                  <div>Time</div>
-              </div>
-              <div class="border py-2 px-2 space-y-1">
-                <div>Image</div>
-                <div>Title</div>
-                <div>Time</div>
-            </div>
-            <div class="border py-2 px-2 space-y-1">
-              <div>Image</div>
-              <div>Title</div>
-              <div>Time</div>
-          </div>
-          <div class="border py-2 px-2 space-y-1">
-            <div>Image</div>
-            <div>Title</div>
-            <div>Time</div>
-        </div>
-        <div class="border py-2 px-2 space-y-1">
-          <div>Image</div>
-          <div>Title</div>
-          <div>Time</div>
-      </div>
-
-            </div>
-        </div>
-
-
-        <div class="text-xl font-bold mt-4">{{ workout.title }}</div>
     </div>
-</div> 
+    <div class="flex-grow p-4 mt-20 flex">
+        <div class="w-full md:w-3/4 md:pr-4 border rounded-lg overflow-hidden">
+            <div class="relative aspect-w-16 aspect-h-9">
+                <video id="main-video" controls class="object-cover w-full h-full">
+                    <source src="{{ workout.video.url }}" type="video/mp4">
+                </video>
+            </div>
+            <div class="p-4">
+                <div class="text-xl font-bold mb-2">{{ workout.title }}</div>
+                <div class="text-sm text-gray-500 mb-4">
+                </div>
+            </div>
+        </div>
+        <div class="w-full md:w-1/4 md:pl-4 border rounded-lg p-4 overflow-y-auto max-h-96">
+            <h3 class="text-lg font-bold mb-2">Related Exercises</h3>
+            {% with category=workout.category %}
+            <div class="grid grid-cols-1 gap-4">
+                {% for exercise in category.workout_set.all %}
+                {% if exercise != workout %}
+                <div class="flex ml-4 items-center">
+                    {% if exercise.workoutimage_set.exists %}
+                    <img src="{{ exercise.workoutimage_set.first.image.url }}" alt="{{ exercise.title }}" class="w-24 h-24 rounded-lg mb-2" onclick="changeVideo('{{ exercise.video.url }}')">
+                    {% else %}
+                    <img src="{% static 'default_exercise_image.jpg' %}" alt="{{ exercise.title }}" class="w-24 h-24 rounded-lg mb-2" onclick="changeVideo('{{ exercise.video.url }}')">
+                    {% endif %}
+                    <div class="text-sm text-center">{{ exercise.title }}</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endwith %}
+        </div>
+    </div>
+</div>
 
-
-
+<script>
+    function changeVideo(videoUrl) {
+        document.getElementById("main-video").src = videoUrl;
+    }
+</script>
 {% endblock %}
