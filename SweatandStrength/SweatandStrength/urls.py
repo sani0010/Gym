@@ -38,8 +38,8 @@ urlpatterns = [
     path('track_calories/', views.track_calories, name="track_calories"),
     path('logout/', logout_view, name='logout'), 
     path('profile/', views.profile, name='profile'),
-    path('delete_account/', views.delete_account, name='delete_account')
-
+    path('delete_account/', views.delete_account, name='delete_account'),
+    path('subscription/', views.subscription, name='subscription'),
 
 
     

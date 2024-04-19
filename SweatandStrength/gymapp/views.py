@@ -108,7 +108,9 @@ def track_calories(request):
 def workout_detail(request, workout_id):
     workout = get_object_or_404(Workout, id=workout_id)
     print(workout.video.url)
-    return render(request, 'workout_detail.html', {'workout': workout})
+    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
+    return render(request, 'workout_detail.html', {'workout': workout, 'profile_picture_url': profile_picture_url})
+
 
 #Settings page
 def profile(request):
@@ -233,3 +235,7 @@ def apply_for_trainer(request):
             return redirect('base')  
 
     return render(request, 'trainer_signup.html', {'form': form})
+
+def subscription(request):
+    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
+    return render(request, 'subscription.html', {'profile_picture_url': profile_picture_url})

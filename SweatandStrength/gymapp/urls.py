@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('create-password/', views.create_password, name='create_password'),
     path('profile/', views.update_profile, name='profile'),
-
+    
+    
 
 ]

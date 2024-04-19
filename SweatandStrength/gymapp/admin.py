@@ -24,6 +24,9 @@ class WorkoutAdmin(admin.ModelAdmin):
 
     display_video.short_description = 'Video Preview'
 
+
+    
+
 admin.site.register(Workout, WorkoutAdmin)
 admin.site.register(GymTrainerApplication, GymTrainerApplicationAdmin)
 admin.site.register(Category, CategoryAdmin)

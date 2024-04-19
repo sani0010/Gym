@@ -28,7 +28,7 @@
         </div>
             <div
               id="profileDropdown"
-              class="hidden  absolute right-0 mt-36 w-48 bg-white rounded-md shadow-lg z-50"
+              class="hidden absolute right-0 mt-36 w-48 bg-white rounded-md shadow-lg z-100"
             >
               {% if user.is_authenticated %}
               <a
@@ -95,7 +95,7 @@
         </a>
       </li>
       <li>
-        <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+        <a href="{% url 'subscription' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
           <i class="fas fa-credit-card text-gray-600 mr-5"></i>
           <span>Subscription</span>
         </a>
