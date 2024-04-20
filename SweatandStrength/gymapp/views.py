@@ -238,3 +238,7 @@ def apply_for_trainer(request):
 def subscription(request):
     profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
     return render(request, 'subscription.html', {'profile_picture_url': profile_picture_url})
+
+def trainer_page(request):
+    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
+    return render(request, 'trainer_page.html', {'profile_picture_url': profile_picture_url})

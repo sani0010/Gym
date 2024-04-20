@@ -1,13 +1,12 @@
 from django.db import models
 from shortuuid.django_fields import ShortUUIDField
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 
 
 def user_directory_path(instance, filename):
     return 'workout_videos/{0}'.format(filename)
-
-
 
 
 class UserProfile(models.Model):

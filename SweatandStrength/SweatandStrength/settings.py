@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     
 ]
 
+
+
 TAILWIND_APP_NAME = 'theme'
 
 INTERNAL_IPS = [
@@ -159,3 +161,4 @@ JAZZMIN_SETTINGS = {
 MESSAGE_TAGS={
     messages.ERROR:'danger'
 }
+
