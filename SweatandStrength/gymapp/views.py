@@ -16,10 +16,12 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import UserProfile
+from .decorators import unauthenticated_user, allowed_users
+
+
 
 @login_required
 def update_profile(request):
@@ -153,6 +155,7 @@ def Splash(request):
 
 
 #Creating new user
+@unauthenticated_user
 def Signup(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -185,6 +188,7 @@ def Signup(request):
 
 
 #login the user
+@unauthenticated_user
 def Login(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -239,6 +243,10 @@ def subscription(request):
     profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
     return render(request, 'subscription.html', {'profile_picture_url': profile_picture_url})
 
+
+#trainer page
+@login_required
+@allowed_users(allowed_roles=['trainer'])
 def trainer_page(request):
     profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
     return render(request, 'trainer_page.html', {'profile_picture_url': profile_picture_url})
