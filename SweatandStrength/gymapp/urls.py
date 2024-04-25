@@ -15,6 +15,5 @@ urlpatterns = [
     path('trainer_page/', views.trainer_page, name='trainer_page'),
     # path('search/', views.search_results, name='search_results'),
     path('payment-response/', views.payment_response, name='payment_response'),
-    
 
 ]

@@ -21,7 +21,7 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import UserProfile
-from .decorators import unauthenticated_user, allowed_users
+from .decorators import unauthenticated_user, allowed_users, trainer_only
 from django.db.models import Q
 from django.http import JsonResponse
 import hmac
@@ -31,6 +31,8 @@ import uuid
 import json
 from django.http import HttpResponse
 from .models import Transaction
+from django.db.models import Sum
+from .forms import SignupForm, LoginForm
 
 
 def subscription(request):  
@@ -181,8 +183,6 @@ def delete_account(request):
     return render(request, 'delete_account.html')
 
 
-
-#calorie tracking
 # calorie tracking
 def track_calories(request):
     if request.method == 'POST':
@@ -233,81 +233,78 @@ def logout_view(request):
     messages.success(request, "You have been successfully logged out")
     return redirect("splash")
 
-# home page
+
+#home page
 def Splash(request):
-    return render(request, 'splash.html')
+    if request.user.is_authenticated:
+        # Summing all calorie entries for the current user
+        total_calories = CalorieTracking.objects.filter(user=request.user).aggregate(total_calories=Sum('calories_consumed'))['total_calories'] or 0
+        return render(request, 'splash.html', {'total_calories': total_calories})
+    else:
+        # Handle cases where the user is not authenticated
+        # You may want to redirect to a login page or display a message
+        return render(request, 'splash.html', {})
+
 
 
 #Creating new user
 @unauthenticated_user
 def Signup(request):
     if request.method == "POST":
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        confirm_password = request.POST['confirm_password']
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
 
-        if not username:
-            messages.error(request, "Username cannot be empty")
-            return redirect("signup")
+            # Check if username or email already exists
+            if User.objects.filter(username=username).exists():
+                messages.error(request, "Username already exists")
+                return redirect("signup")
+            if User.objects.filter(email=email).exists():
+                messages.error(request, "Email already exists")
+                return redirect("signup")
 
-        if not email:
-            messages.error(request, "Email cannot be empty")
-            return redirect("signup")
+            # Create a new user object
+            myuser = User.objects.create_user(username, email, password)
+            messages.success(request, "Your account has been successfully created")
+            return redirect("login")
+    else:
+        form = SignupForm()
+    return render(request, "signup.html", {"form": form})
 
-        # Check if passwords match
-        if password != confirm_password:
-            messages.error(request, "Passwords do not match")
-            return redirect("signup")
-
-        # Check if username or email already exists
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
-            return redirect("signup")
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email already exists")
-            return redirect("signup")
-
-        # Create a new user object
-        myuser = User.objects.create_user(username, email, password)
-        messages.success(request, "Your account has been successfully created")
-        return redirect("login")
-
-    return render(request, "signup.html")
-
-#login the user
 @unauthenticated_user
 def Login(request):
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            # Check if the username is empty
+            if not username:
+                messages.error(request, "Username cannot be empty")
+                return redirect("login")
 
-        
-        if not username:
-            messages.error(request, "Username cannot be empty")
-            return redirect("login")
+            # Check if the password is empty
+            if not password:
+                messages.error(request, "Password cannot be empty")
+                return redirect("login")
 
-        # Check if the password is empty
-        if not password:
-            messages.error(request, "Password cannot be empty")
-            return redirect("login")
+            # Authenticate the user
+            user = authenticate(username=username, password=password)
 
-        # Authenticate the user
-        user = authenticate(username=username, password=password)
+            # Check if the user exists
+            if user is None:
+                messages.error(request, "User dose not exist")
+                return redirect("login")
 
-        # Check if the user exists
-        if user is None:
-            messages.error(request, "User dose not exist")
-            return redirect("login")
-
-        # Login the user
-        login(request, user)
-        messages.success(request, "You have been successfully logged in")
-        return redirect("splash")
-
-
-    return render(request, "login.html")
+            # Login the user
+            login(request, user)
+            messages.success(request, "You have been successfully logged in")
+            return redirect("splash")
+    else:
+        form = LoginForm()
+    return render(request, "login.html", {"form": form})
 
 
 #navbar
@@ -340,6 +337,7 @@ def generate_signature(message, secret):
 #trainer page
 @login_required
 @allowed_users(allowed_roles=['trainer'])
+@trainer_only
 def trainer_page(request):
     return render(request, 'trainer_page.html')
 

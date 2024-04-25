@@ -1,11 +1,73 @@
-{% load static tailwind_tags %}
+{% load static %}
+{% load tailwind_tags %}
 {% tailwind_css %}
-
 {% include 'topnav.html' %}
-{% block trainer_page %}
 
+{% block trainer %}
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 
+<div class="mt-16 flex flex-col md:flex-row justify-between">
+    <div class="md:w-64"></div>
+    {% for message in messages %} {% endfor %}
+    <div class="flex-1 p-5">
+        <div class="w-full md:w-[120%] h-[24%] md:h-[45%] rounded-xl">
+            <img class="object-cover rounded-xl w-full h-full" src="{% static 'assets/img/one.png' %}" alt="Image"/>
+        </div>
+        <div class="flex space-x-3 w-full md:w-[120%]">
+            <div class="mt-5 p-3 w-1/2 bg-orange-300 rounded-xl">
+                <h2 class="text-lg font-bold mb-3">Workout:</h2>
+            </div>
+            <div class="mt-5 p-3 w-1/2 bg-blue-300 rounded-xl">
+                <h2 class="text-lg font-bold mb-3">Total Calories Consumed:</h2>
+                <p>{{ total_calories }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="flex-1 p-5">
+      <div class="w-full md:w-[80%] mt-5 bg-purple-300 rounded-lg shadow-md p-6 float-right">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold">Goals</h2>
+            <a href="#" class="text-blue-500 hover:text-blue-700">View All</a>
+        </div>
+        <ul class="list-disc pl-4">
+          <li class="mb-2">
+            <span class="font-bold">Monday:</span> Stretch at 08:00 (20 Rounds)
+        </li>
+        <li class="mb-2">
+            <span class="font-bold">Tuesday:</span> Back Stretch at 08:00 (10 Rounds)
+        </li>
+        <li class="mb-2">
+            <span class="font-bold">Wednesday:</span> Yoga at 08:00 (20min)
+        </li>
 
+        </ul>
+    </div>
+        <div class="w-full md:w-[80%] mt-5 bg-blue-300 rounded-lg shadow-md p-6 float-right">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">My Schedule</h2>
+                <a href="#" class="text-blue-500 hover:text-blue-700">View All</a>
+            </div>
+            <ul class="list-disc pl-4">
+                <li class="mb-2">
+                    <span class="font-bold">Monday:</span> Stretch at 08:00 (20 Rounds)
+                </li>
+                <li class="mb-2">
+                    <span class="font-bold">Tuesday:</span> Back Stretch at 08:00 (10 Rounds)
+                </li>
+                <li class="mb-2">
+                    <span class="font-bold">Wednesday:</span> Yoga at 08:00 (20min)
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
-
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+<script>
+    {% for flashmsg in messages %}
+    alertify.set('notifier', 'position', 'top-right');
+    alertify.success('{{ flashmsg }}');
+    {% endfor %}
+</script>
 {% endblock %}

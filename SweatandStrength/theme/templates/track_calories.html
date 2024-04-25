@@ -3,6 +3,11 @@
 {% include 'topnav.html' %}
 
 {% block track_calories %}
+{% for message in messages %}
+{% endfor %}
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+
 <div class="flex justify-center min-h-screen bg-gray-100">
     <div class="flex w-full max-w-5xl">
         <div class="ml-8 mt-16 w-1/2">
@@ -27,7 +32,7 @@
                 <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300">Submit</button>
             </form>
         </div>
-        <div class="mr-8 mt-32  w-1/2">
+        <div class="mr-8 mt-32 w-1/2">
             <div class="bg-white p-8 rounded-lg shadow-md">
                 <h2 class="text-2xl font-semibold mb-4">Calorie Tracking Entries:</h2>
                 <ul class="list-disc pl-8">
@@ -39,4 +44,11 @@
         </div>
     </div>
 </div>
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+<script>
+    {% for flashmsg in messages %}
+        alertify.set('notifier','position', 'top-right');
+        alertify.success('{{flashmsg}}');
+    {% endfor %}
+</script>
 {% endblock %}
