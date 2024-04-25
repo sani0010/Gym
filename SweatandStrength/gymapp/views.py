@@ -337,7 +337,6 @@ def generate_signature(message, secret):
 #trainer page
 @login_required
 @allowed_users(allowed_roles=['trainer'])
-@trainer_only
 def trainer_page(request):
     return render(request, 'trainer_page.html')
 

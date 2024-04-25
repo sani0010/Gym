@@ -90,7 +90,6 @@ class Transaction(models.Model):
     subscription_plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
     transaction_uuid = models.CharField(max_length=100)
     transaction_code = models.CharField(max_length=100)
-    # Add more fields as needed
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
