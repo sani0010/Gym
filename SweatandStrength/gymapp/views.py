@@ -2,12 +2,14 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from .utils import send_email_to_client
 from .models import  Workout, Category
 from django.shortcuts import render, redirect
 from .forms import trainerform
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from .forms import CalorieTrackingForm
-from .models import CalorieTracking
+from .models import CalorieTracking, SubscriptionPlan
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -20,9 +22,106 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import UserProfile
 from .decorators import unauthenticated_user, allowed_users
+from django.db.models import Q
+from django.http import JsonResponse
+import hmac
+import hashlib
+import base64
+import uuid
+import json
+from django.http import HttpResponse
+from .models import Transaction
+
+
+def subscription(request):  
+    subscription_plans = SubscriptionPlan.objects.all()
+    return render(request, 'subscription.html', {'subscription_plans': subscription_plans})
+
+
+#payment view
+def payment_view(request, plan_id):
+    request.session['selected_plan_id'] = plan_id
+
+    try:
+        selected_plan = SubscriptionPlan.objects.get(id=plan_id)
+    except SubscriptionPlan.DoesNotExist:
+        return HttpResponse("Invalid plan ID")
+
+    transaction_id = uuid.uuid4().hex
+    message = f"total_amount={selected_plan.price},transaction_uuid={transaction_id},product_code=EPAYTEST"
+    secret_code = "8gBm/:&EnhH.1/q"
+    signature = generate_signature(message, secret_code)
+
+    context = {
+        'selected_plan': selected_plan,
+        'signature': signature,
+        'message': message,
+        'transaction_id': transaction_id
+    }
+    return render(request, 'payment.html', context)
 
 
 
+def payment_response(request):
+    encoded_data = request.GET.get('data')
+    if not encoded_data:
+        return JsonResponse({'status': 'error', 'message': 'No data provided'}, status=400)
+
+    decoded_data = base64.b64decode(encoded_data).decode('utf-8')
+    response_data = json.loads(decoded_data)
+    transaction_status = response_data.get('status')
+
+    if transaction_status == 'COMPLETE':
+        transaction_uuid = response_data.get('transaction_uuid')
+        transaction_code = response_data.get('transaction_code')
+
+        # Retrieve selected plan ID from session
+        selected_plan_id = request.session.get('selected_plan_id')
+        if not selected_plan_id:
+            return JsonResponse({'status': 'error', 'message': 'Selected plan ID not found in session'}, status=400)
+
+        # Fetch selected plan details
+        selected_plan = get_object_or_404(SubscriptionPlan, id=selected_plan_id)
+
+        # Store transaction details in the database
+        transaction = Transaction.objects.create(
+            user=request.user if request.user.is_authenticated else None,
+            subscription_plan=selected_plan,
+            transaction_uuid=transaction_uuid,
+            transaction_code=transaction_code
+            # Add more fields as needed
+        )
+        transaction.save()
+
+        # Send email notification
+        user = request.user if request.user.is_authenticated else None
+        if user and user.email:
+            subject = 'Payment Successful'
+            message = f'Hi {user.username}, your payment was successful. Your transaction code is {transaction_code}.'
+            recipient_list = [user.email]
+            send_email_to_client(subject, message, recipient_list)
+
+        return HttpResponseRedirect('/subscription')
+    else:
+        return JsonResponse({'status': 'failed', 'message': 'Transaction incomplete'})
+
+    return JsonResponse({'status': 'error', 'message': 'Unexpected error occurred'}, status=500)
+
+
+
+# def search_results(request):
+#     search_query = request.GET.get('q', '')
+
+#     search_results = Workout.objects.filter(title__icontains=search_query) | Workout.objects.filter(description__icontains=search_query)
+
+#     context = {
+#         'search_query': search_query,
+#         'search_results': search_results,
+#     }
+
+#     return render(request, 'search_results.html', context)
+
+#update profile
 @login_required
 def update_profile(request):
     if request.method == 'POST':
@@ -45,8 +144,9 @@ def update_profile(request):
         messages.success(request, 'Profile updated successfully.')
         return redirect('profile')
 
-    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
-    return render(request, 'profile.html', {'profile_picture_url': profile_picture_url})
+    return render(request, 'profile.html')
+
+
 
 #change password
 @login_required
@@ -83,6 +183,7 @@ def delete_account(request):
 
 
 #calorie tracking
+# calorie tracking
 def track_calories(request):
     if request.method == 'POST':
         form = CalorieTrackingForm(request.POST)
@@ -94,31 +195,21 @@ def track_calories(request):
             return redirect('track_calories')
     else:
         form = CalorieTrackingForm()
-    
+
     calorie_entries = CalorieTracking.objects.filter(user=request.user)
-    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
-    return render(request, 'track_calories.html', {'form': form, 'calorie_entries': calorie_entries, 'profile_picture_url': profile_picture_url})
+    return render(request, 'track_calories.html', {'form': form, 'calorie_entries': calorie_entries})
 
-
-
-
-
-
-
-#workout detail with id
+# workout detail with id
 def workout_detail(request, workout_id):
     workout = get_object_or_404(Workout, id=workout_id)
     print(workout.video.url)
-    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
-    return render(request, 'workout_detail.html', {'workout': workout, 'profile_picture_url': profile_picture_url})
+    return render(request, 'workout_detail.html', {'workout': workout})
 
-
-#Settings page
+# Settings page
 def profile(request):
     return render(request, 'profile.html')
 
-
-#filtering the workout based on category
+# filtering the workout based on category
 def Home(request):
     if request.method == 'GET' and 'category' in request.GET:
         category_id = request.GET.get('category')
@@ -132,26 +223,19 @@ def Home(request):
             workouts = Workout.objects.all()
     else:
         workouts = Workout.objects.all()
-        
+
     categories = Category.objects.all()
-    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
-    return render(request, "base.html", {'workout': workouts, 'category': categories, 'profile_picture_url': profile_picture_url})
-
-
+    return render(request, "base.html", {'workout': workouts, 'category': categories})
 
 # logout the user
-def logout_view(request): 
-    logout(request) 
+def logout_view(request):
+    logout(request)
     messages.success(request, "You have been successfully logged out")
     return redirect("splash")
 
-
-#home page
+# home page
 def Splash(request):
-    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
-    return render(request, 'splash.html', {'profile_picture_url': profile_picture_url})
-
-
+    return render(request, 'splash.html')
 
 
 #Creating new user
@@ -163,11 +247,9 @@ def Signup(request):
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
-        
         if not username:
             messages.error(request, "Username cannot be empty")
             return redirect("signup")
-        
 
         if not email:
             messages.error(request, "Email cannot be empty")
@@ -175,17 +257,24 @@ def Signup(request):
 
         # Check if passwords match
         if password != confirm_password:
-            messages.error(request, "Passwords dose not match")
+            messages.error(request, "Passwords do not match")
+            return redirect("signup")
+
+        # Check if username or email already exists
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect("signup")
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already exists")
             return redirect("signup")
 
         # Create a new user object
         myuser = User.objects.create_user(username, email, password)
-
         messages.success(request, "Your account has been successfully created")
         return redirect("login")
 
     return render(request, "signup.html")
-
 
 #login the user
 @unauthenticated_user
@@ -239,14 +328,25 @@ def apply_for_trainer(request):
 
     return render(request, 'trainer_signup.html', {'form': form})
 
-def subscription(request):
-    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
-    return render(request, 'subscription.html', {'profile_picture_url': profile_picture_url})
+
+def generate_signature(message, secret):
+    message_bytes = message.encode('utf-8')
+    secret_bytes = secret.encode('utf-8')
+    hash_bytes = hmac.new(secret_bytes, message_bytes, hashlib.sha256).digest()
+    hash_in_base64 = base64.b64encode(hash_bytes).decode('utf-8')
+    return hash_in_base64
 
 
 #trainer page
 @login_required
 @allowed_users(allowed_roles=['trainer'])
 def trainer_page(request):
-    profile_picture_url = request.user.userprofile.profile_picture.url if hasattr(request.user, 'userprofile') and request.user.userprofile.profile_picture else ''
-    return render(request, 'trainer_page.html', {'profile_picture_url': profile_picture_url})
+    return render(request, 'trainer_page.html')
+
+
+
+
+
+
+
+

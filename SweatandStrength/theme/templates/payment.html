@@ -1,0 +1,133 @@
+{% load static tailwind_tags %}
+{% tailwind_css %}
+{% include 'topnav.html' %}
+{% block payment %}
+
+<div class="flex justify-center">
+  <div class="md:w-64"></div>
+  <div class="container mx-auto mt-32 max-w-2xl">
+    <h1 class="text-3xl font-semibold mb-8">Payment Details</h1>
+    <div class="text-center mb-8">
+      
+      <h2 class="text-2xl">Total Amount: {{ selected_plan.price }} </h2>
+      
+    </div>
+    <div class="bg-white rounded-lg p-6 shadow-md">
+      <h2 class="text-2xl font-bold mb-4 text-center">Select Payment Option:</h2>
+      <ul class="mt-4 space-y-2">
+        <li class="flex items-center justify-center">
+          <input type="radio" id="option1" name="payment_option" value="option1" checked>
+          <label for="option1" class="ml-2">Esewa</label>
+        </li>
+        
+      </ul>
+      <div class="">
+       
+        <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
+        <input
+          type="text"
+          id="amount"
+          name="amount"
+          value="{{ selected_plan.price }}"
+          required
+          readonly
+          class="hidden"
+        />
+        <input
+          type="text"
+          id="tax_amount"
+          name="tax_amount"
+          value="0"
+          required
+          readonly
+          class="hidden"
+        />
+        <input
+          type="text"
+          id="total_amount"
+          name="total_amount"
+          value="{{ selected_plan.price }}"
+          required
+          readonly
+          class="hidden"
+        />
+        <input
+          type="text"
+          id="transaction_uuid"
+          name="transaction_uuid"
+          value="{{transaction_id}}"
+          readonly
+          class="hidden"
+        />
+        <input
+          type="text"
+          id="product_code"
+          name="product_code"
+          value="EPAYTEST"
+          required
+          readonly
+          class="hidden"
+        />
+        <input
+          type="text"
+          id="product_service_charge"
+          name="product_service_charge"
+          value="0"
+          required
+          readonly
+          class="hidden"
+        />
+        <input
+          type="text"
+          id="product_delivery_charge"
+          name="product_delivery_charge"
+          value="0"
+          readonly
+          required
+          class="hidden"
+        />
+        <input
+          type="text"
+          id="success_url"
+          name="success_url"
+          value="http://127.0.0.1:8000/payment-response/"
+          required
+          readonly
+          class="hidden"
+        />
+        <input
+          type="text"
+          id="failure_url"
+          name="failure_url"
+          value="http://127.0.0.1:8000/subscription/"
+          required
+          readonly
+          class="hidden"
+        />
+        <input
+          type="text"
+          id="signed_field_names"
+          name="signed_field_names"
+          value="total_amount,transaction_uuid,product_code"
+          readonly
+          class="hidden"
+        />
+        <input
+          type="text"
+          id="signature"
+          name="signature"
+          value="{{signature}}"
+          required
+          readonly
+          class="hidden"
+        />
+       <input type="submit" class="bg-blue-500 ml-72 mt-5 text-white py-2 px-4 rounded-md inline-block hover:bg-blue-600"></input>
+    
+        </form>
+      </div>
+      
+
+    </div>
+  </div>
+</div>
+{% endblock %}

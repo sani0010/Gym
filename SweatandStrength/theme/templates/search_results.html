@@ -1,0 +1,26 @@
+{% include 'topnav.html' %}
+<div class="flex">
+    <div class="md:w-64"></div>
+
+    <div class="container mx-auto mt-32 px-24">
+        <h1 class="text-3xl font-semibold mb-8">Search Results for "{{ search_query }}"</h1>
+        <div id="searchResultsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% if search_results %}
+                {% for p in search_results %}
+                    {% if p.workoutimage_set.exists %}
+                        <a href="{% url 'workout_detail' workout_id=p.id %}" class="bg-white rounded-md shadow-md overflow-hidden">
+                            <img src="{{ p.workoutimage_set.first.image.url }}" alt="" class="w-full h-64 object-cover">
+                            <div class="p-4">
+                                <p class="text-lg font-bold">{{ p.category.title }}</p>
+                                <p class="text-lg font-bold">{{ p.title }}</p>
+                                <p class="text-sm">{{ p.description }}</p>
+                            </div>
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <p class="text-xl">No results found</p>
+            {% endif %}
+        </div>
+    </div>
+</div>

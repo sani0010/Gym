@@ -1,7 +1,6 @@
 from django.db import models
 from shortuuid.django_fields import ShortUUIDField
 from django.contrib.auth.models import User
-from django.contrib.auth.models import AbstractUser
 
 
 
@@ -15,6 +14,8 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
+
+
 
 class Category(models.Model):
     title = models.CharField(max_length=100)
@@ -74,4 +75,26 @@ class CalorieTracking(models.Model):
 
 
 
+class SubscriptionPlan(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.IntegerField()
+    description = models.TextField(default='')
 
+
+    def __str__(self):
+        return self.name
+    
+
+    
+class Transaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    subscription_plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
+    transaction_uuid = models.CharField(max_length=100)
+    transaction_code = models.CharField(max_length=100)
+    # Add more fields as needed
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Transaction {self.id}"

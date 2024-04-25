@@ -47,8 +47,6 @@ INSTALLED_APPS = [
     
 ]
 
-
-
 TAILWIND_APP_NAME = 'theme'
 
 INTERNAL_IPS = [
@@ -80,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'gymapp.context_processors.profile_picture',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -161,4 +160,9 @@ JAZZMIN_SETTINGS = {
 MESSAGE_TAGS={
     messages.ERROR:'danger'
 }
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # This is typically missing and crucial.
+EMAIL_HOST_USER = 'np03cs4s220122@heraldcollege.edu.np'
+EMAIL_HOST_PASSWORD = 'kkfygifpwygmmtfp'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

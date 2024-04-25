@@ -2,7 +2,7 @@
 {% load tailwind_tags %} 
 {% tailwind_css %} 
 {% include 'topnav.html' %}
-
+{% block splash %}
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 
@@ -32,3 +32,4 @@
                 alertify.success('{{flashmsg}}');
             {% endfor %}
         </script>
+{% endblock %}

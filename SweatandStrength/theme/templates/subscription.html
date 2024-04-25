@@ -1,71 +1,33 @@
 {% load static tailwind_tags %}
 {% tailwind_css %}
+{% include 'topnav.html' %}
 
-{% include 'topnav.html' %} 
-
-<div class="md:w-64">
-</div>
+{% block subscription %}
+<div class="md:w-64"></div>
 <div class="flex justify-center ml-64 items-center min-h-screen bg-gray-100">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- 7 Day Trial Card -->
-        <div class="bg-black text-white rounded-lg p-6 h-96">
-            <h2 class="text-2xl font-bold mb-4">7 Day Trial</h2>
-            <p class="mb-4">Auto Renews Monthly</p>
-            <p class="text-5xl font-bold mb-6">1000</p>
-            <p class="mb-4">7 Days Free</p>
-            <a href="#" class="bg-white text-black py-2 px-4 rounded-md inline-block hover:bg-gray-200">Get Started</a>
-            <ul class="mt-6 space-y-2">
-                <li class="flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                    Experience 7 days of unlimited access
-                </li>
-
-            </ul>
-        </div>
-
-        <!-- One Month Card -->
-        <div class="bg-white rounded-lg p-6 shadow-md">
-            <h2 class="text-2xl font-bold mb-4">One Month</h2>
-            <p class="mb-4">Renews Monthly</p>
-            <p class="text-5xl font-bold mb-6">2000</p>
-            <p class="mb-4">Per Month</p>
-            <a href="#" class="bg-blue-500 text-white py-2 px-4 rounded-md inline-block hover:bg-blue-600">Get Started</a>
-            <ul class="mt-6 space-y-2">
-                <li class="flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                    Unlimited Workout Plans
-                </li>
-                <!-- Add more list items as needed -->
-            </ul>
-        </div>
-
-        <!-- One Year Card -->
-        <div class="bg-blue-500 text-white rounded-lg p-6">
-            <h2 class="text-2xl font-bold mb-4">One Year</h2>
-            <p class="mb-4">Renews Annually Save 17%</p>
-            <p class="text-5xl font-bold mb-6">3000</p>
-            <p class="mb-4 ">Per Year</p>
-            <a href="#" class="bg-white text-blue-500 py-2 px-4 rounded-md inline-block hover:bg-gray-200">Get Started</a>
-            <ul class="mt-6 space-y-2">
-                <li class="flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                    Unlimited Workout Planning on the App
-                </li>
-                <li class="flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                    Unlimited Workout Tracking on the App
-                </li>
-                <!-- Add more list items as needed -->
-            </ul>
-        </div>
-    
+        {% for plan in subscription_plans %}
+            {% if forloop.counter == 1 %}
+                <div class="bg-black text-white rounded-lg p-6 h-96">
+            {% elif forloop.counter == 2 %}
+                <div class="bg-white text-black rounded-lg p-6 h-96">
+            {% else %}
+                <div class="bg-blue-500 text-white rounded-lg p-6 h-96">
+            {% endif %}
+                <h2 class="text-2xl font-bold mb-4">{{ plan.name }}</h2>
+                <p class="mb-4">{{ plan.description }}</p>
+                <p class="text-5xl font-bold mb-6">{{ plan.price }}</p>
+                <a href="{% url 'payment' plan.id %}" id="trial-card" class="bg-white text-black py-2 px-4 rounded-md inline-block hover:bg-gray-200">Get Started</a>
+                <ul class="mt-6 space-y-2">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        Experience 7 days of unlimited access
+                    </li>
+                </ul>
+            </div>
+        {% endfor %}
     </div>
 </div>
+{% endblock %}

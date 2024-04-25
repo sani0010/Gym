@@ -23,8 +23,6 @@ from gymapp.views import logout_view
 
 
 
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("gymapp.urls")),
@@ -40,6 +38,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('delete_account/', views.delete_account, name='delete_account'),
     path('subscription/', views.subscription, name='subscription'),
+
 
 
     
