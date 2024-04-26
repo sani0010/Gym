@@ -25,7 +25,7 @@
         </div>
             <div
               id="profileDropdown"
-              class="hidden absolute right-0 mt-36 w-48 bg-white rounded-md shadow-lg z-100"
+              class="hidden absolute right-0 mt-36 w-48 bg-white rounded-md shadow-lg "
             >
               {% if user.is_authenticated %}
               <a
@@ -67,6 +67,7 @@
         </a>
         <hr class="my-3 border-t border-gray-200"> 
       </li>
+      {% if not request.user.is_staff%}
       <li>
         <a href="{% url 'splash'%}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
           <i class="fas fa-home text-gray-600 mr-5"></i>
@@ -79,20 +80,6 @@
           <span>Workouts</span>
         </a> 
       </li>
-      {% if request.user.is_staff %}
-      <li>
-        <a href="{% url 'trainer_page' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
-          <i class="fas fa-user text-gray-600 mr-5"></i>
-          <span>Trainer</span>
-        </a>
-      </li>
-      {% endif %}
-      <li>
-        <a href="{% url 'track_calories' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
-          <i class="fas fa-fire text-gray-600 mr-5"></i>
-          <span>Calorie</span>
-        </a>
-      </li>
       <li>
         <a href="{% url 'subscription' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
           <i class="fas fa-credit-card text-gray-600 mr-5"></i>
@@ -100,18 +87,44 @@
         </a>
       </li>
       <li>
+        <a href="{% url 'track_calories' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+          <i class="fas fa-fire text-gray-600 mr-5"></i>
+          <span>Calorie</span>
+        </a>
+      </li>
+
+      {% endif %}
+      {% if request.user.is_staff %}
+      <li>
+        <a href="{% url 'trainer_page' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+          <i class="fas fa-user text-gray-600 mr-5"></i>
+          <span>Trainer</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'track_calories' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
+          <i class="fas fa-fire text-gray-600 mr-5"></i>
+          <span>Calorie</span>
+        </a>
+      </li>
+      {% endif %}
+
+      <li>
         <a href="{% url 'profile' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
           <i class="fas fa-cog text-gray-600 mr-5"></i>
           <span>Settings</span>
         </a>
       </li>
+   
+      {% if user.is_authenticated %}
       <div class="fixed bottom-0 w-64 left-0 p-4">
-        {% comment %} <hr class="my-3 border-t border-gray-200"> 
+         <hr class="my-3 border-t border-gray-200"> 
         <a href="{% url 'logout' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
           <i class="fas fa-sign-out-alt text-gray-600 mr-5"></i>
           <span>Logout</span>
-        </a> {% endcomment %}
+        </a> 
       </div>
+      {% endif %}
     </ul>
   </nav>
 </div>

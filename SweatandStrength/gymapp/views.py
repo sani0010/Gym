@@ -41,6 +41,7 @@ def subscription(request):
 
 
 #payment view
+@login_required(login_url='login')
 def payment_view(request, plan_id):
     request.session['selected_plan_id'] = plan_id
 
@@ -124,7 +125,7 @@ def payment_response(request):
 #     return render(request, 'search_results.html', context)
 
 #update profile
-@login_required
+@login_required(login_url='login')
 def update_profile(request):
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
@@ -151,7 +152,7 @@ def update_profile(request):
 
 
 #change password
-@login_required
+@login_required(login_url='login')
 def create_password(request):
     if request.method == 'POST':
         new_password = request.POST.get('new_password')
@@ -173,7 +174,7 @@ def create_password(request):
 
 
 #delete account successful
-@login_required
+@login_required(login_url='login')
 def delete_account(request):
     if request.method == 'POST':
         user = request.user
@@ -184,7 +185,11 @@ def delete_account(request):
 
 
 # calorie tracking
+@login_required(login_url='login')
 def track_calories(request):
+    if not request.user.is_authenticated:
+        messages.success(request, 'Please log in to access this page.')
+        return redirect('login')
     if request.method == 'POST':
         form = CalorieTrackingForm(request.POST)
         if form.is_valid():
@@ -198,6 +203,7 @@ def track_calories(request):
 
     calorie_entries = CalorieTracking.objects.filter(user=request.user)
     return render(request, 'track_calories.html', {'form': form, 'calorie_entries': calorie_entries})
+
 
 # workout detail with id
 def workout_detail(request, workout_id):
@@ -292,7 +298,6 @@ def Login(request):
 
             # Authenticate the user
             user = authenticate(username=username, password=password)
-
             # Check if the user exists
             if user is None:
                 messages.error(request, "User dose not exist")
@@ -301,6 +306,7 @@ def Login(request):
             # Login the user
             login(request, user)
             messages.success(request, "You have been successfully logged in")
+            
             return redirect("splash")
     else:
         form = LoginForm()

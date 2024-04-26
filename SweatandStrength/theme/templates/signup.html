@@ -2,7 +2,78 @@
 
 {% block content %}
 
-<body class="bg-gray-100 flex items-center justify-center h-screen">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+        <div class="flex items-center p-2 text-gray-900 rounded-lg ml-20 ">
+            <i class="fas fa-dumbbell text-orange-500 mr-5"></i>
+            <span class="text-orange-500 font-bold ">Sweat & Strength</span>
+          </div>
+      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
+    </div>
+  
+    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form action="{% url 'signup' %}" method="post">
+            {% csrf_token %}
+            
+        <div>
+            {% for message in messages %}
+            {% endfor %}
+          <label for="username" class="block text-sm font-medium leading-6 text-gray-900">Username</label>
+          <div class="mt-2">
+            <input type="text" id="username" name="username"  required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+            <label for="email" class="block text-sm font-medium text-gray-600">Email:</label>
+        </div>
+        <div class="mt-2">
+            <input type="email" id="email" name="email" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+        </div>
+  
+        <div>
+          <div class="flex items-center justify-between">
+            <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
+          </div>
+          <div class="mt-2">
+            <input type="password" id="password" name="password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+        <div>
+            <div class="flex items-center justify-between">
+              <label for="confirm_password" class="block text-sm font-medium leading-6 text-gray-900">Confirm Password</label>
+            </div>
+            <div class="mt-2">
+              <input type="password" id="confirm_password" name="confirm_password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+            </div>
+          </div>
+  
+          <div class="flex justify-between items-center mb-4 mt-4">
+            <button type="submit"
+            class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+        Signup
+    </button>
+    <div class="border-t border-black w-16"></div>
+    <p class="text-lg text-gray-600 mx-4">Or</p>
+    <div class="border-t border-black w-16"></div> 
+    <button type="button"
+    onclick="window.location.href='{% url 'trainer_signup' %}'"
+    class="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300">
+    Signup as trainer
+    </button>
+        </div>
+      </form>
+      <p class="mt-4 text-sm text-gray-600">Already have an account? <a href="{% url 'login' %}"
+        class="text-blue-500">Login
+           here</a></p>
+  
+    </div>
+  </div>
+
+
+
+{% comment %} <body class="bg-gray-100 flex items-center justify-center h-screen">
     <div class="bg-white p-8 rounded shadow-md w-96">
         <h1 class="text-2xl font-semibold mb-4">Signup</h1>
 
@@ -51,6 +122,6 @@
         </form>
     </div>
     
-</body>
+</body> {% endcomment %}
 
 {% endblock content %}
