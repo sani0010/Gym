@@ -58,11 +58,10 @@
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-
     document.getElementById('close-modal-btn').addEventListener('click', function() {
         document.getElementById('goal-modal').classList.add('hidden');
     });
-    
+
     document.addEventListener('DOMContentLoaded', function() {
         fetchGoalsFromServer();
 
@@ -75,7 +74,10 @@
     });
 
     function fetchGoalsFromServer() {
-        fetch('/get_goals/')
+        // Get the user's ID from the Django template context
+        var userId = "{{ request.user.id }}";
+
+        fetch(`/get_goals/?user_id=${userId}`)
             .then(response => response.json())
             .then(data => {
                 var goalList = document.getElementById('goal-list');
@@ -162,6 +164,7 @@
         });
     });
 </script>
+
 
 {% endblock %}
 {% endblock %}

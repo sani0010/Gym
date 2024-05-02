@@ -37,11 +37,41 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Goal
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import PasswordResetConfirmView
+
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    def form_valid(self, form):
+        # Call the parent form_valid method
+        response = super().form_valid(form)
+        # Redirect to the login page after password reset
+        return redirect('login')
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important to keep the user logged in
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'change_password.html', {'form': form})
+
+
 
 @login_required(login_url='login')
 def get_goals(request):
-    goals = Goal.objects.all().values('due_date', 'title')  # Assuming 'due_date' and 'title' are fields in your Goal model
-    return JsonResponse({'goals': list(goals)})
+    user_goals = Goal.objects.filter(user=request.user)  # Filter goals by logged-in user
+    goals_data = [{'title': goal.title, 'due_date': goal.due_date} for goal in user_goals]
+    return JsonResponse({'goals': goals_data})
+
+
 
 @login_required(login_url='login')
 @csrf_exempt
