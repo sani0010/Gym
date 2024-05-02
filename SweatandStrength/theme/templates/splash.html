@@ -1,11 +1,12 @@
 {% load static %}
-{% load tailwind_tags %}
-{% tailwind_css %}
+
+{% block content %}
 {% include 'topnav.html' %}
 
 {% block splash %}
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <div class="mt-16 flex flex-col md:flex-row justify-between">
     <div class="md:w-64"></div>
@@ -25,49 +26,142 @@
         </div>
     </div>
     <div class="flex-1 p-5">
-      <div class="w-full md:w-[80%] mt-5 bg-purple-300 rounded-lg shadow-md p-6 float-right">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold">Goals</h2>
-            <a href="#" class="text-blue-500 hover:text-blue-700">View All</a>
-        </div>
-        <ul class="list-disc pl-4">
-          <li class="mb-2">
-            <span class="font-bold">Monday:</span> Stretch at 08:00 (20 Rounds)
-        </li>
-        <li class="mb-2">
-            <span class="font-bold">Tuesday:</span> Back Stretch at 08:00 (10 Rounds)
-        </li>
-        <li class="mb-2">
-            <span class="font-bold">Wednesday:</span> Yoga at 08:00 (20min)
-        </li>
-
-        </ul>
-    </div>
-        <div class="w-full md:w-[80%] mt-5 bg-blue-300 rounded-lg shadow-md p-6 float-right">
+        <div class="w-full md:w-[80%] mt-5 bg-purple-300 rounded-lg shadow-md p-6 float-right">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-bold">My Schedule</h2>
-                <a href="#" class="text-blue-500 hover:text-blue-700">View All</a>
+                <h2 class="text-2xl font-bold">Goals</h2>
+                <a href="#" id="add-goal-btn" class="text-blue-500 hover:text-blue-700">Add a Goal</a>
             </div>
-            <ul class="list-disc pl-4">
-                <li class="mb-2">
-                    <span class="font-bold">Monday:</span> Stretch at 08:00 (20 Rounds)
-                </li>
-                <li class="mb-2">
-                    <span class="font-bold">Tuesday:</span> Back Stretch at 08:00 (10 Rounds)
-                </li>
-                <li class="mb-2">
-                    <span class="font-bold">Wednesday:</span> Yoga at 08:00 (20min)
-                </li>
+            <ul id="goal-list" class="list-disc pl-4">
+                <!-- Goals will be rendered here -->
+                {% for goal in goals %}
+                <li>{{ goal.due_date }}: {{ goal.title }}</li>
+                {% endfor %}
             </ul>
         </div>
+        <!-- Modal for adding a goal -->
+        <div id="goal-modal" class="hidden fixed inset-0 bg-gray-50 bg-opacity-70 flex items-center justify-center">
+            <div class="bg-white rounded-lg p-6 w-96 relative">
+                <h2 class="text-2xl font-bold mb-4">Add Goal</h2>
+                <button id="close-modal-btn" class="absolute top-0 right-0 m-2 text-gray-600 hover:text-gray-800 focus:outline-none">
+                    <i class="fas fa-times"></i>
+                </button>
+                <input type="text" id="goal-input" class="border border-gray-300 rounded-md p-2 mb-4" placeholder="Enter your goal">
+                <input type="text" id="goal-date" class="border border-gray-300 rounded-md p-2 mb-4" placeholder="Select date">
+                <button id="save-goal-btn" class="bg-blue-500 text-white rounded-md px-4 py-2">Save Goal</button>
+            </div>
+        </div>
+        
+        
     </div>
 </div>
 
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    {% for flashmsg in messages %}
-    alertify.set('notifier', 'position', 'top-right');
-    alertify.success('{{ flashmsg }}');
-    {% endfor %}
+
+    document.getElementById('close-modal-btn').addEventListener('click', function() {
+        document.getElementById('goal-modal').classList.add('hidden');
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchGoalsFromServer();
+
+        // Add event listener to close modal if clicked outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('#goal-modal') && !event.target.closest('#add-goal-btn')) {
+                document.getElementById('goal-modal').classList.add('hidden');
+            }
+        });
+    });
+
+    function fetchGoalsFromServer() {
+        fetch('/get_goals/')
+            .then(response => response.json())
+            .then(data => {
+                var goalList = document.getElementById('goal-list');
+                goalList.innerHTML = ''; // Clear existing list items
+
+                if (data.goals.length === 0) {
+                    // If no goals, display "No goals added yet."
+                    var noGoalsItem = document.createElement('li');
+                    noGoalsItem.textContent = 'No goals added yet.';
+                    goalList.appendChild(noGoalsItem);
+                } else {
+                    // Render goals in the list
+                    data.goals.forEach(goal => {
+                        var listItem = document.createElement('li');
+                        listItem.textContent = goal.due_date + ': ' + goal.title;
+                        
+                        // Check if the goal's due date has passed
+                        var dueDate = new Date(goal.due_date);
+                        var currentDate = new Date();
+                        if (dueDate < currentDate) {
+                            // If due date has passed, mark as expired or remove
+                            listItem.classList.add('expired-goal');
+                        }
+                        
+                        goalList.appendChild(listItem);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching goals:', error);
+            });
+    }
+
+    // Show modal when clicking "Add a Goal" link
+    document.getElementById('add-goal-btn').addEventListener('click', function() {
+        document.getElementById('goal-modal').classList.remove('hidden');
+    });
+
+    // Initialize Flatpickr for date input
+    flatpickr("#goal-date", {
+        enableTime: false,
+        dateFormat: "Y-m-d",
+    });
+
+    // Handle saving goal
+    document.getElementById('save-goal-btn').addEventListener('mousedown', function() {
+        console.log('Save Goal button pressed');
+        var goal = document.getElementById('goal-input').value;
+        var date = document.getElementById('goal-date').value;
+
+        // Send AJAX request to Django view
+        fetch('/add_goal/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}', // Include CSRF token for security
+            },
+            body: 'title=' + encodeURIComponent(goal) + '&due_date=' + encodeURIComponent(date),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Goal saved successfully
+                console.log('Goal saved successfully');
+
+                // Add the new goal to the list
+                var goalList = document.getElementById('goal-list');
+                var listItem = document.createElement('li');
+                listItem.textContent = date + ': ' + goal;
+                goalList.appendChild(listItem);
+
+                // Close the modal
+                document.getElementById('goal-modal').classList.add('hidden');
+                document.getElementById('goal-input').value = '';
+                document.getElementById('goal-date').value = '';
+            } else {
+                // Handle error
+                console.error('Error saving goal:', data.error);
+            }
+        })
+        .catch(error => {
+            // Handle network error
+            console.error('Network error:', error);
+        });
+    });
 </script>
+
+{% endblock %}
 {% endblock %}

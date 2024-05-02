@@ -33,7 +33,28 @@ from django.http import HttpResponse
 from .models import Transaction
 from django.db.models import Sum
 from .forms import SignupForm, LoginForm
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import Goal
+from django.views.decorators.csrf import csrf_exempt
 
+@login_required(login_url='login')
+def get_goals(request):
+    goals = Goal.objects.all().values('due_date', 'title')  # Assuming 'due_date' and 'title' are fields in your Goal model
+    return JsonResponse({'goals': list(goals)})
+
+@login_required(login_url='login')
+@csrf_exempt
+def add_goal(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        due_date = request.POST.get('due_date')
+        goal = Goal(title=title, due_date=due_date)
+        goal.user = request.user
+        goal.save()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 def subscription(request):  
     subscription_plans = SubscriptionPlan.objects.all()
@@ -243,12 +264,10 @@ def logout_view(request):
 #home page
 def Splash(request):
     if request.user.is_authenticated:
-        # Summing all calorie entries for the current user
+        # adding calories
         total_calories = CalorieTracking.objects.filter(user=request.user).aggregate(total_calories=Sum('calories_consumed'))['total_calories'] or 0
         return render(request, 'splash.html', {'total_calories': total_calories})
     else:
-        # Handle cases where the user is not authenticated
-        # You may want to redirect to a login page or display a message
         return render(request, 'splash.html', {})
 
 
@@ -271,13 +290,14 @@ def Signup(request):
                 messages.error(request, "Email already exists")
                 return redirect("signup")
 
-            # Create a new user object
+            # Create a new user\
             myuser = User.objects.create_user(username, email, password)
             messages.success(request, "Your account has been successfully created")
             return redirect("login")
     else:
         form = SignupForm()
     return render(request, "signup.html", {"form": form})
+
 
 @unauthenticated_user
 def Login(request):

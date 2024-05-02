@@ -4,7 +4,10 @@ from .models import  Workout, WorkoutImage, GymTrainerApplication, Category
 from django.contrib import admin
 from .models import GymTrainerApplication, SubscriptionPlan
 from .models import CalorieTracking, Transaction
+from .models import Goal
 
+class GoalAdmin(admin.ModelAdmin):
+    list_display = ('user','title', 'due_date', 'created_at')
 
 class GymTrainerApplicationAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'phone', 'certification', 'experience')
@@ -35,6 +38,8 @@ class CalorieTrackingAdmin(admin.ModelAdmin):
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('user', 'subscription_plan', 'transaction_uuid', 'transaction_code')
 
+
+admin.site.register(Goal, GoalAdmin)
 admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(CalorieTracking, CalorieTrackingAdmin)
 admin.site.register(Workout, WorkoutAdmin)

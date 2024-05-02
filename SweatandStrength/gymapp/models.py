@@ -43,7 +43,7 @@ class Workout(models.Model):
 
 
 class WorkoutImage(models.Model):
-    workout = models.ForeignKey(Workout, on_delete=models.CASCADE)  # ForeignKey to establish the connection
+    workout = models.ForeignKey(Workout, on_delete=models.CASCADE) 
     image = models.ImageField(upload_to='workout-images', default="workout.jpg")
 
     class Meta:
@@ -96,3 +96,14 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"Transaction {self.id}"
+
+
+
+class Goal(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    title = models.CharField(max_length=200)
+    due_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
