@@ -42,6 +42,42 @@ from django.contrib.auth.views import PasswordResetConfirmView
 
 
 
+
+from django.shortcuts import render
+from . import calorie_calculator
+
+def track_calories(request):
+    total_calories = None
+
+    if request.method == 'POST':
+        weight_kg = float(request.POST.get('weight'))
+        height_cm = float(request.POST.get('height'))
+        age = int(request.POST.get('age'))
+        gender = request.POST.get('gender')
+        activity_level = request.POST.get('activity')
+
+        # Update the activity factor based on the selected activity level
+        activity_factors = {
+            'sedentary': 1.2,
+            'lightly active': 1.375,
+            'moderately active': 1.55,
+            'very active': 1.725,
+        }
+        activity_factor = activity_factors[activity_level]
+
+        try:
+            bmr = calorie_calculator.calculate_calorie_intake(weight_kg, height_cm, age, gender)
+            total_calories = bmr * activity_factor
+        except ValueError as e:
+            # Handle the error raised by the calculate_calorie_intake function
+            error_message = str(e)
+
+    context = {'total_calories': total_calories}
+    return render(request, 'track_calories.html', context)
+
+
+
+
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     def form_valid(self, form):
         # Call the parent form_valid method
@@ -236,24 +272,24 @@ def delete_account(request):
 
 
 # calorie tracking
-@login_required(login_url='login')
-def track_calories(request):
-    if not request.user.is_authenticated:
-        messages.success(request, 'Please log in to access this page.')
-        return redirect('login')
-    if request.method == 'POST':
-        form = CalorieTrackingForm(request.POST)
-        if form.is_valid():
-            calorie_entry = form.save(commit=False)
-            calorie_entry.user = request.user
-            calorie_entry.save()
-            messages.success(request, 'Calorie tracking data added successfully!')
-            return redirect('track_calories')
-    else:
-        form = CalorieTrackingForm()
+# @login_required(login_url='login')
+# def track_calories(request):
+#     if not request.user.is_authenticated:
+#         messages.success(request, 'Please log in to access this page.')
+#         return redirect('login')
+#     if request.method == 'POST':
+#         form = CalorieTrackingForm(request.POST)
+#         if form.is_valid():
+#             calorie_entry = form.save(commit=False)
+#             calorie_entry.user = request.user
+#             calorie_entry.save()
+#             messages.success(request, 'Calorie tracking data added successfully!')
+#             return redirect('track_calories')
+#     else:
+#         form = CalorieTrackingForm()
 
-    calorie_entries = CalorieTracking.objects.filter(user=request.user)
-    return render(request, 'track_calories.html', {'form': form, 'calorie_entries': calorie_entries})
+#     calorie_entries = CalorieTracking.objects.filter(user=request.user)
+#     return render(request, 'track_calories.html', {'form': form, 'calorie_entries': calorie_entries})
 
 
 # workout detail with id
