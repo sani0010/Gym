@@ -3,8 +3,13 @@ from django.utils.html import format_html
 from .models import  Workout, WorkoutImage, GymTrainerApplication, Category 
 from django.contrib import admin
 from .models import GymTrainerApplication, SubscriptionPlan
-from .models import CalorieTracking, Transaction
+from .models import Transaction
 from .models import Goal
+from .models import CalorieIntake
+
+
+class CalorieIntakeAdmin(admin.ModelAdmin): 
+    list_display = ('user', 'date', 'calories')
 
 class GoalAdmin(admin.ModelAdmin):
     list_display = ('user','title', 'due_date', 'created_at')
@@ -32,16 +37,15 @@ class SubscriptionPlanAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'description')
 
 
-class CalorieTrackingAdmin(admin.ModelAdmin):
-    list_display = ('user', 'date', 'calories_consumed')
-
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('user', 'subscription_plan', 'transaction_uuid', 'transaction_code')
 
 
+
+admin.site.register(CalorieIntake, CalorieIntakeAdmin)
 admin.site.register(Goal, GoalAdmin)
 admin.site.register(Transaction, TransactionAdmin)
-admin.site.register(CalorieTracking, CalorieTrackingAdmin)
+
 admin.site.register(Workout, WorkoutAdmin)
 admin.site.register(GymTrainerApplication, GymTrainerApplicationAdmin)
 admin.site.register(Category, CategoryAdmin)

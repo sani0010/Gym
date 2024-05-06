@@ -66,14 +66,6 @@ class GymTrainerApplication(models.Model):
 
 
 
-
-class CalorieTracking(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField()
-    calories_consumed = models.PositiveIntegerField(default=0)
-
-
-
 class SubscriptionPlan(models.Model):
     name = models.CharField(max_length=255)
     price = models.IntegerField()

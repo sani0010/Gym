@@ -2,7 +2,7 @@ from django import forms
 from .models import GymTrainerApplication
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import CalorieTracking
+# from .models import CalorieTracking
 from django.core.validators import RegexValidator
 
 # Email validator
@@ -53,16 +53,12 @@ class trainerform(forms.ModelForm):
     
 
 
+from django import forms
+from .models import CalorieIntake
 
-
- 
-
-class CalorieTrackingForm(forms.ModelForm):
+class CalorieIntakeForm(forms.ModelForm):
     class Meta:
-        model = CalorieTracking
-        fields = ['date', 'calories_consumed']
-        widgets = {
-            'date': forms.DateInput(attrs={'type': 'date'})
-        }
+        model = CalorieIntake
+        fields = ['calories']
 
 

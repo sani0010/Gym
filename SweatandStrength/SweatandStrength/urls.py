@@ -33,7 +33,6 @@ urlpatterns = [
     path('login/', views.Login, name="login"),
     path('navbar/', views.navbar, name='navbar'),
     path('workout_detail/<int:workout_id>/', views.workout_detail, name="workout_detail"),
-    path('track_calories/', views.track_calories, name="track_calories"),
     path('logout/', logout_view, name='logout'), 
     path('profile/', views.profile, name='profile'),
     path('delete_account/', views.delete_account, name='delete_account'),

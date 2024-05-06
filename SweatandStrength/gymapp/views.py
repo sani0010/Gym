@@ -8,8 +8,7 @@ from django.shortcuts import render, redirect
 from .forms import trainerform
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from .forms import CalorieTrackingForm
-from .models import CalorieTracking, SubscriptionPlan
+from .models import  SubscriptionPlan
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -39,15 +38,18 @@ from .models import Goal
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordResetConfirmView
-
-
-
-
 from django.shortcuts import render
 from . import calorie_calculator
+from .models import CalorieIntake
+from .forms import CalorieIntakeForm
+
+
+
+
 
 def track_calories(request):
     total_calories = None
+    error_message = None
 
     if request.method == 'POST':
         weight_kg = float(request.POST.get('weight'))
@@ -63,16 +65,24 @@ def track_calories(request):
             'moderately active': 1.55,
             'very active': 1.725,
         }
-        activity_factor = activity_factors[activity_level]
+        activity_factor = activity_factors.get(activity_level)
 
-        try:
-            bmr = calorie_calculator.calculate_calorie_intake(weight_kg, height_cm, age, gender)
-            total_calories = bmr * activity_factor
-        except ValueError as e:
-            # Handle the error raised by the calculate_calorie_intake function
-            error_message = str(e)
+        if activity_factor is not None:
+            try:
+                bmr = calorie_calculator.calculate_calorie_intake(weight_kg, height_cm, age, gender)
+                total_calories = bmr * activity_factor
 
-    context = {'total_calories': total_calories}
+                # Save total calories for the current user
+                CalorieIntake.objects.create(user=request.user, calories=total_calories)
+
+            except ValueError as e:
+                # Handle the error raised by the calculate_calorie_intake function
+                error_message = str(e)
+        else:
+            error_message = "Invalid activity level"
+
+    form = CalorieIntakeForm()
+    context = {'form': form, 'total_calories': total_calories, 'error_message': error_message}
     return render(request, 'track_calories.html', context)
 
 
@@ -271,25 +281,6 @@ def delete_account(request):
     return render(request, 'delete_account.html')
 
 
-# calorie tracking
-# @login_required(login_url='login')
-# def track_calories(request):
-#     if not request.user.is_authenticated:
-#         messages.success(request, 'Please log in to access this page.')
-#         return redirect('login')
-#     if request.method == 'POST':
-#         form = CalorieTrackingForm(request.POST)
-#         if form.is_valid():
-#             calorie_entry = form.save(commit=False)
-#             calorie_entry.user = request.user
-#             calorie_entry.save()
-#             messages.success(request, 'Calorie tracking data added successfully!')
-#             return redirect('track_calories')
-#     else:
-#         form = CalorieTrackingForm()
-
-#     calorie_entries = CalorieTracking.objects.filter(user=request.user)
-#     return render(request, 'track_calories.html', {'form': form, 'calorie_entries': calorie_entries})
 
 
 # workout detail with id
@@ -331,7 +322,7 @@ def logout_view(request):
 def Splash(request):
     if request.user.is_authenticated:
         # adding calories
-        total_calories = CalorieTracking.objects.filter(user=request.user).aggregate(total_calories=Sum('calories_consumed'))['total_calories'] or 0
+        total_calories = CalorieIntake.objects.filter(user=request.user).aggregate(total_calories=Sum('calories'))['total_calories'] or 0
         return render(request, 'splash.html', {'total_calories': total_calories})
     else:
         return render(request, 'splash.html', {})
