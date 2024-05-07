@@ -166,3 +166,4 @@ EMAIL_HOST_USER = 'np03cs4s220122@heraldcollege.edu.np'
 EMAIL_HOST_PASSWORD = 'kkfygifpwygmmtfp'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+

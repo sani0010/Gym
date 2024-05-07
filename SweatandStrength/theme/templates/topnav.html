@@ -34,6 +34,11 @@
                 >Profile</a
               >
               <a
+              href="{% url 'contact_us' %}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 "
+              >Contact Us</a
+            >
+              <a
                 href="{% url 'logout' %}"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 >Sign out</a
@@ -115,16 +120,16 @@
           <span>Settings</span>
         </a>
       </li>
-   
-      {% if user.is_authenticated %}
-      <div class="fixed bottom-0 w-64 left-0 p-4">
-         <hr class="my-3 border-t border-gray-200"> 
+
+    {% if user.is_authenticated %}
+    <div class="fixed bottom-0 w-64 left-0 p-4">
+        <hr class="my-3 border-t border-gray-200"> 
         <a href="{% url 'logout' %}" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-orange-500">
-          <i class="fas fa-sign-out-alt text-gray-600 mr-5"></i>
-          <span>Logout</span>
+            <i class="fas fa-sign-out-alt text-gray-600 mr-5"></i>
+            <span>Logout</span>
         </a> 
-      </div>
-      {% endif %}
+    </div>
+    {% endif %}
     </ul>
   </nav>
 </div>

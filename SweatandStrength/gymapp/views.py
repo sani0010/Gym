@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login
 from .utils import send_email_to_client
 from .models import  Workout, Category
 from django.shortcuts import render, redirect
-from .forms import trainerform
+from .forms import trainerform, ContactForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from .models import  SubscriptionPlan
@@ -42,7 +42,28 @@ from django.shortcuts import render
 from . import calorie_calculator
 from .models import CalorieIntake
 from .forms import CalorieIntakeForm
+from .models import ContactMessage
 
+def contact_us(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Process the form data (e.g., send an email)
+            # You can access the form fields using form.cleaned_data
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+
+            # Handle the form data as needed (e.g., send an email)
+            ContactMessage.objects.create(name=name, email=email, message=message)
+            # Redirect to a success page or display a success message
+            return redirect('contact_success')  # Replace 'success_page' with the URL name of your success page
+    else:
+        form = ContactForm()
+    return render(request, 'contact.html', {'form': form})
+
+def contact_success(request):
+    return render(request, 'contact_success.html')
 
 
 
@@ -381,6 +402,10 @@ def Login(request):
 
             # Authenticate the user
             user = authenticate(username=username, password=password)
+            if user is not None:
+                if user.groups.filter(name__in=['admin']).exists():
+                    messages.error(request, "You are not allowed to login")
+                    return redirect("login")
             # Check if the user exists
             if user is None:
                 messages.error(request, "User dose not exist")

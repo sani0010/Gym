@@ -1,0 +1,69 @@
+{% include 'topnav.html' %}
+
+{% block title %}
+    Contact Us
+{% endblock %}
+
+{% block content %}
+<div class="container mt-16 mx-auto px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between">
+        <div class="md:w-1/12"></div> 
+        <div class="md:w-5/12 pr-8">
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h2 class="text-3xl font-semibold mb-4">About Us</h2>
+                <p class="text-lg leading-relaxed mb-6">"At "Sweat and Strength," we believe that fitness should be enjoyable, sustainable, and accessible to everyone. Join us on this journey towards better health and wellness, and let's make your fitness goals a reality together.</p>
+                <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
+                    <div class="flex items-center bg-blue-100 shadow-md rounded-lg p-4">
+                        <i class="fas fa-envelope mr-2 text-blue-500"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Email:</h3>
+                            <p>np03cs4s220122@heraldcollege.edu.np</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center bg-blue-100  shadow-md rounded-lg p-4">
+                        <i class="fas fa-phone-alt mr-2 text-blue-500"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Phone:</h3>
+                            <p>+977 9823370996</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center  bg-blue-100 rounded-lg p-4">
+                        <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Address:</h3>
+                            <p>Dhobidhara, Kathmandu</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Form -->
+        <div class="md:w-5/12 mt-8 md:mt-0 pl-8">
+            <div class="bg-white shadow-lg rounded-lg h-full overflow-hidden">
+                <div class="px-6 py-8">
+                    <h2 class="text-3xl font-semibold mb-4 text-center">Send Us a Message</h2>
+                    <form action="{% url 'contact_us' %}" method="POST" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="name" class="block text-gray-700 font-semibold mb-2">Name:</label>
+                            <input type="text" id="name" name="name" class="bg-gray-100 focus:outline-none focus:bg-white border-b-2 border-gray-400 py-2 px-4 w-full" placeholder="Enter your name">
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block text-gray-700 font-semibold mb-2">Email:</label>
+                            <input type="email" id="email" name="email" class="bg-gray-100 focus:outline-none focus:bg-white border-b-2 border-gray-400 py-2 px-4 w-full" placeholder="Enter your email">
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="block text-gray-700 font-semibold mb-2">Message:</label>
+                            <textarea id="message" name="message" class="bg-gray-100 focus:outline-none focus:bg-white border-b-2 border-gray-400 py-2 px-4 w-full" rows="4" placeholder="Enter your message"></textarea>
+                        </div>
+                        <button type="submit" class="bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-600 focus:outline-none">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+</div>
+{% endblock %}

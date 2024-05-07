@@ -6,7 +6,7 @@ from .models import GymTrainerApplication, SubscriptionPlan
 from .models import Transaction
 from .models import Goal
 from .models import CalorieIntake
-
+from .models import ContactMessage
 
 class CalorieIntakeAdmin(admin.ModelAdmin): 
     list_display = ('user', 'date', 'calories')
@@ -41,11 +41,14 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = ('user', 'subscription_plan', 'transaction_uuid', 'transaction_code')
 
 
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'message', 'created_at')
+
 
 admin.site.register(CalorieIntake, CalorieIntakeAdmin)
 admin.site.register(Goal, GoalAdmin)
 admin.site.register(Transaction, TransactionAdmin)
-
+admin.site.register(ContactMessage, ContactMessageAdmin)
 admin.site.register(Workout, WorkoutAdmin)
 admin.site.register(GymTrainerApplication, GymTrainerApplicationAdmin)
 admin.site.register(Category, CategoryAdmin)
