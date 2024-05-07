@@ -25,8 +25,15 @@
 <script>
     {% for flashmsg in messages %}
         alertify.set('notifier','position', 'top-right');
-        alertify.success('{{flashmsg}}');
+        {% if 'error' in flashmsg.tags %}
+            alertify.error('{{ flashmsg }}');
+        {% elif 'success' in flashmsg.tags %}
+            alertify.success('{{ flashmsg }}');
+        {% else %}
+            alertify.message('{{ flashmsg }}');
+        {% endif %}
     {% endfor %}
 </script>
+
 </body>
 </html> 

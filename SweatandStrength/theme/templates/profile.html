@@ -59,8 +59,18 @@
                     </div>
                     <div class="w-80 ml-12">
                         <label for="phone_number" class="block text-sm font-medium text-gray-700">Account Type</label>
-                        <input type="text" id="phone_number" name="phone_number" value="{{ user.phone_number }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        {% if user.subscription_plan %}
+                            {% if user.subscription_plan.paid %}
+                                <input type="text" id="phone_number" name="phone_number" value="Paid" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" readonly>
+                            {% else %}
+                                <input type="text" id="phone_number" name="phone_number" value="Free" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" readonly>
+                            {% endif %}
+                        {% else %}
+                            <input type="text" id="phone_number" name="phone_number" value="Free" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" readonly>
+                        {% endif %}
                     </div>
+                    
+                    
                 
                     <div class="flex justify-end">
                         <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>

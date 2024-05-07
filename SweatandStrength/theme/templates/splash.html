@@ -99,9 +99,8 @@
                         var dueDate = new Date(goal.due_date);
                         var currentDate = new Date();
                         if (dueDate < currentDate) {
-                            // If due date has passed, mark as expired and skip
+                            // If due date has passed, mark as expired or remove
                             listItem.classList.add('expired-goal');
-                            return; // Skip adding this goal to the list
                         }
                         
                         goalList.appendChild(listItem);
@@ -166,7 +165,6 @@
         });
     });
 </script>
-
 
 
 {% endblock %}

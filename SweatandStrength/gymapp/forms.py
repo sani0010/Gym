@@ -31,6 +31,7 @@ class SignupForm(forms.Form):
         if password != confirm_password:
             self.add_error('confirm_password', 'Passwords do not match')
 
+
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=100)
     password = forms.CharField(max_length=100)

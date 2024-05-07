@@ -51,6 +51,9 @@ def track_calories(request):
     total_calories = None
     error_message = None
 
+    # Retrieve all calorie intake records for the current user
+    calorie_intakes = CalorieIntake.objects.filter(user=request.user)
+
     if request.method == 'POST':
         weight_kg = float(request.POST.get('weight'))
         height_cm = float(request.POST.get('height'))
@@ -80,11 +83,11 @@ def track_calories(request):
                 error_message = str(e)
         else:
             error_message = "Invalid activity level"
-
+            
     form = CalorieIntakeForm()
-    context = {'form': form, 'total_calories': total_calories, 'error_message': error_message}
+    
+    context = {'form': form, 'total_calories': total_calories, 'error_message': error_message, 'calorie_intakes': calorie_intakes}
     return render(request, 'track_calories.html', context)
-
 
 
 
@@ -197,9 +200,12 @@ def payment_response(request):
         user = request.user if request.user.is_authenticated else None
         if user and user.email:
             subject = 'Payment Successful'
-            message = f'Hi {user.username}, your payment was successful. Your transaction code is {transaction_code}.'
+            message = f'Hi {user.username},you have booked a trainer. Your payment was successful. Your transaction code is {transaction_code}.'
             recipient_list = [user.email]
             send_email_to_client(subject, message, recipient_list)
+
+        selected_plan.paid = True
+        selected_plan.save()
 
         return HttpResponseRedirect('/subscription')
     else:
