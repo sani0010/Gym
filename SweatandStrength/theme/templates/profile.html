@@ -8,12 +8,12 @@
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 
-    <div class="ml-[18rem]">
-        <div class="mt-16 p-4 ">
+    <div class="ml-[20rem]">
+        <div class="mt-32 p-4 ">
         </div>
 
-        <div class="flex justify-between relative">
-            <div id="profileSection">
+        <div class="flex justify-between relative mr-12 shadow-lg border">
+            <div id="profileSection" class="border w-[54rem]">
 
                 <form action="{% url 'profile' %}" method="POST" class="space-y-4 flex flex-col" enctype="multipart/form-data">
                     {% csrf_token %}
@@ -78,24 +78,26 @@
                     
                 </form>
             </div> 
-            <div class="mr-6 absolute left-[64%]">
-                <button id="profileBtn" class="w-full py-2 px-4 mb-2 bg-blue-600 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">Profile</button>
-                <button id="accountBtn" class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">Account</button>
+            <div class="mr-6 absolute left-[54rem]">
+                <button id="profileBtn" class="w-[19rem] py-2 px-4 mb-1 border bg-gray-100 text-black font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-500">Profile</button>
+                <button id="accountBtn" class="w-full py-2 px-4 border bg-gray-100 text-black font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-500">Account</button>
             </div>
+            
         
 
         <div id="accountSection" style="display:none;">
-            <div class="mt-8">
+            <div class="border w-[54rem]">
+            <div class="mt-8 ml-10">
                 <h2 class="text-lg font-bold mb-4">Create Password</h2>
                 <form action="{% url 'create_password' %}" method="POST" class="space-y-4">
                     {% csrf_token %}
                     <div>
                         <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
-                        <input type="password" id="new_password" name="new_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        <input type="password" id="new_password" name="new_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-[30rem] shadow-sm sm:text-sm border-gray-300 rounded-md">
                     </div>
                     <div>
                         <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                        <input type="password" id="confirm_password" name="confirm_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        <input type="password" id="confirm_password" name="confirm_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-[30rem] shadow-sm sm:text-sm border-gray-300 rounded-md">
                     </div>
                     <div>
                         <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -104,7 +106,7 @@
                     </div>
                 </form>
             </div>
-            <div class="mt-8">
+            <div class="mt-8 ml-10">
                 <h2 class="text-lg font-bold ">Delete Account</h2>
                 <p class="text-sm text-gray-700 mb-4">No longer want to use our service? You can delete your account here. This action is not reversible. All information related to this account will be deleted permanently.</p>
                 <form action="" method="POST">
