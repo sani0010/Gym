@@ -163,9 +163,11 @@ def add_goal(request):
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
+
+########################################################### Subscription  #################################################################
 def subscription(request):  
     subscription_plans = SubscriptionPlan.objects.all()
-    return render(request, 'subscription.html', {'subscription_plans': subscription_plans})
+    return render(request, 'subscription.html',  {'subscription_plans': subscription_plans})
 
 
 ########################################################### Payment  #################################################################
@@ -409,10 +411,10 @@ def Login(request):
 
             # Authenticate the user
             user = authenticate(username=username, password=password)
-            if user is not None:
-                if user.groups.filter(name__in=['admin']).exists():
-                    messages.error(request, "You are not allowed to login")
-                    return redirect("login")
+            login(request, user)
+            messages.success(request, "You have been successfully logged in")
+            if user.is_staff:  # Redirect staff members to trainer_page
+                    return redirect("trainer_page")
             # Check if the user exists
             if user is None:
                 messages.error(request, "User dose not exist")
@@ -455,11 +457,14 @@ def generate_signature(message, secret):
     return hash_in_base64
 
 
-#trainer page
+########################################################### Trainer Page #################################################################
+
 @login_required
 @allowed_users(allowed_roles=['trainer'])
 def trainer_page(request):
-    return render(request, 'trainer_page.html')
+    all_transactions = Transaction.objects.all()
+    print(all_transactions)
+    return render(request, 'trainer_page.html', {'transactions': all_transactions})
 
 
 ########################################################### Forget Password #################################################################
