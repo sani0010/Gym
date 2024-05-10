@@ -43,7 +43,13 @@ from . import calorie_calculator
 from .models import CalorieIntake
 from .forms import CalorieIntakeForm
 from .models import ContactMessage
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+from django.contrib.auth.forms import PasswordResetForm
+from django.views.generic.edit import FormView
+from django.contrib.sites.shortcuts import get_current_site
 
+########################################################### Contact Us#################################################################
 def contact_us(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -67,7 +73,7 @@ def contact_success(request):
 
 
 
-
+########################################################### Track Calories #################################################################
 def track_calories(request):
     total_calories = None
     error_message = None
@@ -112,6 +118,7 @@ def track_calories(request):
 
 
 
+########################################################### Change Password #################################################################
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     def form_valid(self, form):
         # Call the parent form_valid method
@@ -134,7 +141,7 @@ def change_password(request):
     return render(request, 'change_password.html', {'form': form})
 
 
-
+########################################################### Goals  #################################################################
 @login_required(login_url='login')
 def get_goals(request):
     user_goals = Goal.objects.filter(user=request.user)  # Filter goals by logged-in user
@@ -161,7 +168,7 @@ def subscription(request):
     return render(request, 'subscription.html', {'subscription_plans': subscription_plans})
 
 
-#payment view
+########################################################### Payment  #################################################################
 @login_required(login_url='login')
 def payment_view(request, plan_id):
     request.session['selected_plan_id'] = plan_id
@@ -248,7 +255,7 @@ def payment_response(request):
 
 #     return render(request, 'search_results.html', context)
 
-#update profile
+########################################################### Update Profile #################################################################
 @login_required(login_url='login')
 def update_profile(request):
     if request.method == 'POST':
@@ -310,7 +317,7 @@ def delete_account(request):
 
 
 
-# workout detail with id
+########################################################### Workout Detail w ID #################################################################
 def workout_detail(request, workout_id):
     workout = get_object_or_404(Workout, id=workout_id)
     print(workout.video.url)
@@ -338,14 +345,14 @@ def Home(request):
     categories = Category.objects.all()
     return render(request, "base.html", {'workout': workouts, 'category': categories})
 
-# logout the user
+########################################################### Logout  #################################################################
 def logout_view(request):
     logout(request)
     messages.success(request, "You have been successfully logged out")
     return redirect("splash")
 
 
-#home page
+########################################################### Home #################################################################
 def Splash(request):
     if request.user.is_authenticated:
         # adding calories
@@ -356,7 +363,7 @@ def Splash(request):
 
 
 
-#Creating new user
+########################################################### Login Signup  #################################################################
 @unauthenticated_user
 def Signup(request):
     if request.method == "POST":
@@ -428,7 +435,7 @@ def navbar(request):
 
 
 
-#Trainer form
+########################################################### Trainer Form #################################################################
 def apply_for_trainer(request):
     form = trainerform()
     if request.method == 'POST':
@@ -455,9 +462,48 @@ def trainer_page(request):
     return render(request, 'trainer_page.html')
 
 
+########################################################### Forget Password #################################################################
+class ForgotPasswordView(FormView):
+    template_name = 'forgot_password.html'
+    form_class = PasswordResetForm
+    success_url = reverse_lazy('password_reset_done')
+
+    def form_valid(self, form):
+        site = get_current_site(self.request)
+        domain = site.domain
+        protocol = 'http' if self.request.is_secure() else 'https'
+        
+        form.save(
+            request=self.request,
+            from_email='example@example.com',
+            email_template_name='password_reset_email.html',
+            subject_template_name='password_reset_subject.txt',
+            extra_email_context={
+                'domain': domain,
+                'protocol': protocol,
+            }
+        )
+        
+        return super().form_valid(form)
 
 
+class CustomPasswordResetView(auth_views.PasswordResetView):
+    email_template_name = 'password_reset_email.html'
+    success_url = reverse_lazy('password_reset_done')
+    template_name = 'password_reset_form.html'
 
+
+class CustomPasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'password_reset_done.html'
+
+
+class CustomPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    success_url = reverse_lazy('password_reset_complete')
+    template_name = 'password_reset_confirm.html'
+
+
+class CustomPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'password_reset_complete.html'
 
 
 

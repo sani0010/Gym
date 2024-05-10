@@ -2,18 +2,21 @@
 {% tailwind_css %}
 {% include 'topnav.html' %}
 {% block payment %}
-
+<body class="bg-gradient-to-r from-orange-200 via-red-200 to-blue-200">
 <div class="flex justify-center">
   <div class="md:w-64"></div>
-  <div class="container mx-auto mt-32 max-w-2xl">
+  <div class="container mx-auto mt-32 max-w-2xl border">
     <h1 class="text-3xl font-semibold mb-8">Payment Details</h1>
     <div class="text-center mb-8">
       
       <h2 class="text-2xl">Total Amount: {{ selected_plan.price }} </h2>
-      
+
+      <p class="mb-4 ">{{ selected_plan.description }}</p>
+
     </div>
-    <div class="bg-white rounded-lg p-6 shadow-md">
+    <div class=" rounded-lg p-6 shadow-md">
       <h2 class="text-2xl font-bold mb-4 text-center">Select Payment Option:</h2>
+      
       <ul class="mt-4 space-y-2">
         <li class="flex items-center justify-center">
           <input type="radio" id="option1" name="payment_option" value="option1" checked>
