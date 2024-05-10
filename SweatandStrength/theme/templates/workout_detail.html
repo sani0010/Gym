@@ -2,10 +2,12 @@
 {% tailwind_css %}
 {% block workout_detail %}
 {% include 'topnav.html' %}
+<body class="bg-gradient-to-r from-orange-200 via-red-200 to-blue-200">
 <div class="flex">
     <div class="md:w-64">
     </div>
-    <div class="flex-grow p-4 mt-20 flex">
+
+    <div class="flex-grow p-4  mt-20 flex">
         <div class="w-full md:w-3/4 md:pr-4 border rounded-lg overflow-hidden">
             <div class="relative aspect-w-16 aspect-h-9">
                 <video id="main-video" controls class="object-cover w-full h-full">
@@ -40,6 +42,7 @@
         </div>
     </div>
 </div>
+</body>
 
 <script>
     function changeVideo(videoUrl) {

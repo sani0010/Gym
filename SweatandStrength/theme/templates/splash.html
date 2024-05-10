@@ -8,9 +8,9 @@
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
+<body class="bg-gradient-to-r from-orange-200 via-red-200 to-blue-200">
 
-
-<div class="mt-16 flex flex-col md:flex-row justify-between">
+<div class="mt-16 flex  flex-col md:flex-row justify-between ">
     <div class="md:w-64"></div>
     {% for message in messages %} {% endfor %}
     <div class="flex-1 p-5">
@@ -103,6 +103,7 @@
                         if (dueDate < currentDate) {
                             // If due date has passed, mark as expired or remove
                             listItem.classList.add('expired-goal');
+                            return;
                         }
                         
                         goalList.appendChild(listItem);

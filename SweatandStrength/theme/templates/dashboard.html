@@ -3,6 +3,7 @@
 <div class="flex ">
     <div class="md:w-64">
     </div>
+    <body class="bg-gradient-to-r from-orange-200 via-red-200 to-blue-200">
     <body class="bg-gray-200 flex-1">
         <div class="container ml-12 p-5">
             <div class="flex justify-end mb-2">
@@ -12,7 +13,7 @@
                     <a href="?category=hard" class="inline-block bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-900 transition-colors duration-300 ease-in-out"> Hard </a>
                 </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-7">
+            <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
                 {% for p in workout %}
                 {% for image in p.workoutimage_set.all %}
                 <a href="{% url 'workout_detail' workout_id=p.id %}" class="bg-white rounded-md shadow-md overflow-hidden">
