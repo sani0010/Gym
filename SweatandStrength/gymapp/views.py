@@ -48,7 +48,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.forms import PasswordResetForm
 from django.views.generic.edit import FormView
 from django.contrib.sites.shortcuts import get_current_site
-
+from django.contrib.auth import login as auth_login
 ########################################################### Contact Us#################################################################
 def contact_us(request):
     if request.method == 'POST':
@@ -355,79 +355,196 @@ def logout_view(request):
 
 
 ########################################################### Home #################################################################
-def Splash(request):
-    if request.user.is_authenticated:
-        # adding calories
-        total_calories = CalorieIntake.objects.filter(user=request.user).aggregate(total_calories=Sum('calories'))['total_calories'] or 0
-        return render(request, 'splash.html', {'total_calories': total_calories})
-    else:
-        return render(request, 'splash.html', {})
+from django.db.models import Sum
+from django.shortcuts import render
+from .models import CalorieIntake
+import json
 
+def Splash(request):
+    total_calories = None
+    labels = []
+    calories = []
+
+    if request.user.is_authenticated:
+        # Retrieve all calorie intake records for the current user
+        calorie_intakes = CalorieIntake.objects.filter(user=request.user).order_by('date')
+
+        # Prepare data for the chart
+        labels = [entry.date.strftime('%Y-%m-%d') for entry in calorie_intakes]
+        calories = [entry.calories for entry in calorie_intakes]
+
+        # Calculate total calories
+        total_calories = sum(calories)
+
+    context = {
+        'total_calories': total_calories,
+        'labels': json.dumps(labels),
+        'calories': json.dumps(calories),
+    }
+
+    return render(request, 'splash.html', context)
 
 
 ########################################################### Login Signup  #################################################################
-@unauthenticated_user
+
+import random
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from .models import OTP
+
+# Function to generate OTP
+def generate_otp():
+    return str(random.randint(100000, 999999))
+
+# Function to send OTP via email
+def send_otp_email(user, otp):
+    subject = 'Email Verification OTP'
+    message = f'Your OTP for email verification is: {otp}'
+    email_from = 'np03cs4s220122@heraldcollege.edu.np'
+    recipient_list = [user.email]
+    send_mail(subject, message, email_from, recipient_list)
+
+# Registration view with email verification
 def Signup(request):
-    if request.method == "POST":
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-
-            # Check if username or email already exists
-            if User.objects.filter(username=username).exists():
-                messages.error(request, "Username already exists")
-                return redirect("signup")
-            if User.objects.filter(email=email).exists():
-                messages.error(request, "Email already exists")
-                return redirect("signup")
-
-            # Create a new user\
-            myuser = User.objects.create_user(username, email, password)
-            messages.success(request, "Your account has been successfully created")
-            return redirect("login")
+    if request.user.is_authenticated:
+        return redirect('splash')
     else:
-        form = SignupForm()
+        if request.method == 'POST':
+
+            username = request.POST['username']
+            email = request.POST['email']
+            password = request.POST['password']
+
+
+            if password == password:
+
+                    # Generate OTP
+                    otp = generate_otp()
+                    # Create user
+                    user = User.objects.create_user(username=username, password=password, email=email)
+                    # Create OTP instance and associate with user
+                    otp_instance = OTP.objects.create(user=user, otp_code=otp)
+                    # Send OTP via email
+                    send_otp_email(user, otp)
+                    messages.success(request, 'Account created successfully.')
+                    request.session['username'] = username  # Store username in session for verification
+                    return redirect('verify_email')  # Redirect to the OTP verification page
+            else:
+                messages.error(request, 'Password does not match ')
+                return redirect('signup')
+
+        else:
+            form = SignupForm()
     return render(request, "signup.html", {"form": form})
 
-
-@unauthenticated_user
-def Login(request):
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            # Check if the username is empty
-            if not username:
-                messages.error(request, "Username cannot be empty")
-                return redirect("login")
-
-            # Check if the password is empty
-            if not password:
-                messages.error(request, "Password cannot be empty")
-                return redirect("login")
-
-            # Authenticate the user
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            messages.success(request, "You have been successfully logged in")
-            if user.is_staff:  # Redirect staff members to trainer_page
-                    return redirect("trainer_page")
-            # Check if the user exists
-            if user is None:
-                messages.error(request, "User dose not exist")
-                return redirect("login")
-
-            # Login the user
-            login(request, user)
-            messages.success(request, "You have been successfully logged in")
-            
-            return redirect("splash")
+# Verification view
+def verify_email(request):
+    if request.method == 'POST':
+        otp_entered = request.POST.get('otp')
+        if 'username' in request.session:
+            username = request.session['username']
+            try:
+                user = User.objects.get(username=username)
+                otp_instance = OTP.objects.get(user=user)
+                if otp_instance.otp_code == otp_entered:
+                    # Mark OTP as verified
+                    otp_instance.verified = True
+                    otp_instance.save()
+                    # Mark email as verified
+                    user.email_verified = True
+                    user.save()
+                    # Set session variable to indicate email verification
+                    request.session['email_verified'] = True
+                    messages.success(request, 'Email verified successfully.')
+                    del request.session['username']  # Remove username from session
+                    return redirect('login')
+                else:
+                    messages.error(request, 'Invalid OTP. Please try again.')
+                    return redirect('verify_email')
+            except User.DoesNotExist:
+                messages.error(request, 'User not found.')
+                return redirect('signup')  # Redirect to registration page if user not found
+            except OTP.DoesNotExist:
+                messages.error(request, 'OTP not found.')
+                return redirect('signup')  # Redirect to registration page if OTP not found
+        else:
+            messages.error(request, 'Username session not found.')
+            return redirect('signup')  # Redirect to registration page if username session not found
     else:
-        form = LoginForm()
+        return render(request, 'verify_email.html')
+
+# Login view
+# Login view
+def Login(request):
+    if request.user.is_authenticated:
+        return redirect('splash')
+    else:
+        if request.method == 'POST':
+            form = LoginForm(request.POST)
+            if form.is_valid():
+                username = request.POST['username']
+                password = request.POST['password']
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    try:
+                        otp_instance = OTP.objects.get(user=user)
+                        if not otp_instance.verified:
+                            # Redirect to OTP verification page if OTP is not verified
+                            request.session['username'] = username
+                            return redirect('verify_email')
+                    except OTP.DoesNotExist:
+                        # If OTP instance does not exist, redirect to OTP verification page
+                        request.session['username'] = username
+                        return redirect('verify_email')
+                    
+                    auth_login(request, user)
+                    messages.success(request, 'Successfully logged in.')
+                    if user.is_staff:  # Redirect staff members to trainer_page
+                        return redirect("trainer_page")
+                    else:
+                        return redirect('splash')
+                else:
+                    messages.error(request, 'Invalid credentials.')
+                    return redirect('login')
+        else:
+            form = LoginForm()
     return render(request, "login.html", {"form": form})
+
+
+
+# @unauthenticated_user
+# def Login(request):
+#     if request.method == "POST":
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data['username']
+#             password = form.cleaned_data['password']
+#             # Check if the username is empty
+#             if not username:
+#                 messages.error(request, "Username cannot be empty")
+#                 return redirect("login")
+
+#             # Check if the password is empty
+#             if not password:
+#                 messages.error(request, "Password cannot be empty")
+#                 return redirect("login")
+
+#             # Authenticate the user
+#             user = authenticate(username=username, password=password)
+#             login(request, user)
+#             messages.success(request, "You have been successfully logged in")
+#             if user.is_staff:  # Redirect staff members to trainer_page
+#                     return redirect("trainer_page")
+#             # Check if the user exists
+#             if user is None:
+#                 messages.error(request, "User dose not exist")
+#                 return redirect("login")
+
+
+#             return redirect("splash")
+#     else:
+#         form = LoginForm()
+#     return render(request, "login.html", {"form": form})
 
 
 #navbar

@@ -27,6 +27,6 @@ urlpatterns = [
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot_password'),
     path('contact/', views.contact_us, name='contact_us'),
     path('contact/success/', views.contact_success, name='contact_success'),
-
+    path('verify-email/', views.verify_email, name='verify_email'),
 
 ]

@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <body class="bg-gradient-to-r from-orange-200 via-red-200 to-blue-200">
 
 <div class="mt-16 flex  flex-col md:flex-row justify-between ">
@@ -26,6 +26,7 @@
                 <p>{{ total_calories }}</p>
             </div>
         </div>
+        
     </div>
     <div class="flex-1 p-5">
         <div class="w-full md:w-[80%] mt-5 bg-purple-300 rounded-lg shadow-md p-6 float-right">
@@ -39,7 +40,17 @@
                 <li>{{ goal.due_date }}: {{ goal.title }}</li>
                 {% endfor %}
             </ul>
+            
         </div>
+        <div class="flex-1 p-5">
+            <div class="w-full md:w-[80%] mt-5 bg-purple-300 rounded-lg shadow-md p-6 float-right">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold">Calorie Intake Over Time</h2>
+                </div>
+                <canvas id="calorie-chart" width="800" height="400"></canvas>
+            </div>
+        </div>
+        
         <!-- Modal for adding a goal -->
         <div id="goal-modal" class="hidden fixed inset-0 bg-gray-50 bg-opacity-70 flex items-center justify-center">
             <div class="bg-white rounded-lg p-6 w-96 relative">
@@ -52,14 +63,21 @@
                 <button id="save-goal-btn" class="bg-blue-500 text-white rounded-md px-4 py-2">Save Goal</button>
             </div>
         </div>
-
+        
         
     </div>
+    
     
 </div>
 
 
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+<script>
+    {% for flashmsg in messages %}
+        alertify.set('notifier','position', 'top-right');
+        alertify.success('{{flashmsg}}');
+    {% endfor %}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     document.getElementById('close-modal-btn').addEventListener('click', function() {
@@ -169,7 +187,36 @@
         });
     });
 </script>
+<script>
+    // Get the data for the chart from the Django template context
+    var labels = JSON.parse('{{ labels|escapejs }}');
+    var calories = JSON.parse('{{ calories|escapejs }}');
 
+    // Create the chart using Chart.js
+    var ctx = document.getElementById('calorie-chart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Calories Consumed',
+                data: calories,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
 
 {% endblock %}
 {% endblock %}

@@ -128,3 +128,10 @@ class ContactMessage(models.Model):
         return self.name
     
 
+class OTP(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    otp_code = models.CharField(max_length=6)
+    verified = models.BooleanField(default=False)
+    def __str__(self):
+        return self.otp_code
+
