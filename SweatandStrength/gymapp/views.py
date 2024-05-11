@@ -74,6 +74,7 @@ def contact_success(request):
 
 
 ########################################################### Track Calories #################################################################
+@login_required(login_url='login')
 def track_calories(request):
     total_calories = None
     error_message = None
@@ -243,19 +244,6 @@ def payment_response(request):
 
     return JsonResponse({'status': 'error', 'message': 'Unexpected error occurred'}, status=500)
 
-
-
-# def search_results(request):
-#     search_query = request.GET.get('q', '')
-
-#     search_results = Workout.objects.filter(title__icontains=search_query) | Workout.objects.filter(description__icontains=search_query)
-
-#     context = {
-#         'search_query': search_query,
-#         'search_results': search_results,
-#     }
-
-#     return render(request, 'search_results.html', context)
 
 ########################################################### Update Profile #################################################################
 @login_required(login_url='login')
