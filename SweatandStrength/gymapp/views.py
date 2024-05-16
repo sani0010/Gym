@@ -461,7 +461,7 @@ def verify_email(request):
     else:
         return render(request, 'verify_email.html')
 
-# Login view
+
 # Login view
 def Login(request):
     if request.user.is_authenticated:
@@ -498,41 +498,6 @@ def Login(request):
             form = LoginForm()
     return render(request, "login.html", {"form": form})
 
-
-
-# @unauthenticated_user
-# def Login(request):
-#     if request.method == "POST":
-#         form = LoginForm(request.POST)
-#         if form.is_valid():
-#             username = form.cleaned_data['username']
-#             password = form.cleaned_data['password']
-#             # Check if the username is empty
-#             if not username:
-#                 messages.error(request, "Username cannot be empty")
-#                 return redirect("login")
-
-#             # Check if the password is empty
-#             if not password:
-#                 messages.error(request, "Password cannot be empty")
-#                 return redirect("login")
-
-#             # Authenticate the user
-#             user = authenticate(username=username, password=password)
-#             login(request, user)
-#             messages.success(request, "You have been successfully logged in")
-#             if user.is_staff:  # Redirect staff members to trainer_page
-#                     return redirect("trainer_page")
-#             # Check if the user exists
-#             if user is None:
-#                 messages.error(request, "User dose not exist")
-#                 return redirect("login")
-
-
-#             return redirect("splash")
-#     else:
-#         form = LoginForm()
-#     return render(request, "login.html", {"form": form})
 
 
 #navbar
