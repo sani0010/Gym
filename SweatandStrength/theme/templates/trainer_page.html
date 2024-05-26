@@ -16,7 +16,7 @@
         </div>
         <div class="flex space-x-3 w-full shadow-md md:w-[120%]">
             <div class="mt-5 p-3 w-1/2 bg-gray-100 rounded-xl">
-                <h2 class="text-lg font-bold mb-3 "><i class="fas fa-video text-orange-500"></i> Total Videos added:</h2>
+                <h2 class="text-lg font-bold mb-3 "><i class="fas fa-video text-orange-500"></i> Total Videos:</h2>
                 <p>{{ total_videos }}</p>
             </div>
             <div class="mt-5 p-3 w-1/2 bg-gray-100 shadow-md rounded-xl">
@@ -32,10 +32,10 @@
             <h2 class="text-2xl font-bold"><i class="fas fa-bell text-orange-500"></i> Notifications</h2>
         </div>
         <ul class="list-disc pl-4">
-            {% if transactions %}
+            {% if user_transactions %}
             <div class="notification">
-                {% for transaction in transactions|slice:":6" %}
-                <p><i class="fas fa-handshake"></i> You are booked for {{ transaction.subscription_plan.name }} by {{ transaction.user.username }}</p>
+                {% for transaction in user_transactions|slice:":6" %}
+                <p><i class="fas fa-handshake"></i> You are booked for {{ transaction.total_transactions }} Months by {{ transaction.user__username }}</p>
                 <!-- Add more transaction details as needed -->
                 {% endfor %}
             </div>
@@ -79,35 +79,33 @@
     {% endfor %}
 </script>
 <script>
-var ctx = document.getElementById('incomeChart').getContext('2d');
-var incomeChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: {{ months|safe }},
-        datasets: [{
-            label: 'Total Income',
-            data: {{ incomes|safe }},
-            backgroundColor: [
-                'rgba(54, 162, 235, 0.2)',
-            ],
-            borderColor: [
-                'rgba(54, 162, 235, 1)',
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
+    var ctx = document.getElementById('incomeChart').getContext('2d');
+    var incomeDistChart = new Chart(ctx, {
+        type: 'line',  // Changed from 'bar' to 'line'
+        data: {
+            labels: {{ months|safe }},
+            datasets: [{
+                label: 'Total Income',
+                data: {{ incomes|safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.5)', // Adjust background color for visibility
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 2,
+                fill: false  // Set fill to false for a typical line chart (no area fill)
+            }]
         },
-        plugins: {
-            legend: {
-                display: true
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true
+                }
             }
         }
-    }
-});
-</script>
+    });
+    </script>
+    
 {% endblock %}

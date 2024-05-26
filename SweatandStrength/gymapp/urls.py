@@ -7,6 +7,7 @@ from .views import CustomPasswordResetView, CustomPasswordResetDoneView, CustomP
 from .views import update_watch_time
 
 
+
 urlpatterns = [
     path('', Splash, name='splash'),
     path('trainer_signup/', views.apply_for_trainer, name='trainer_signup'),
@@ -29,6 +30,7 @@ urlpatterns = [
     path('contact/success/', views.contact_success, name='contact_success'),
     path('verify-email/', views.verify_email, name='verify_email'),\
     path('update_watch_time/<int:workout_id>/', update_watch_time, name='update_watch_time'),
+
     
 
 ]

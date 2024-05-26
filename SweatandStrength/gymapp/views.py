@@ -49,6 +49,9 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.views.generic.edit import FormView
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import login as auth_login
+from datetime import timedelta
+from django.utils import timezone
+
 
 ########################################################### Contact Us#################################################################
 def contact_us(request):
@@ -210,13 +213,20 @@ def payment_response(request):
         transaction_uuid = response_data.get('transaction_uuid')
         transaction_code = response_data.get('transaction_code')
 
-        # Retrieve selected plan ID from session
         selected_plan_id = request.session.get('selected_plan_id')
         if not selected_plan_id:
             return JsonResponse({'status': 'error', 'message': 'Selected plan ID not found in session'}, status=400)
 
-        # Fetch selected plan details
         selected_plan = get_object_or_404(SubscriptionPlan, id=selected_plan_id)
+
+        # Determine if there is an existing active transaction
+        latest_transaction = Transaction.objects.filter(user=request.user).order_by('-expiration_date').first()
+        if latest_transaction and latest_transaction.expiration_date > timezone.now():
+            # If existing active transaction, extend the existing expiration date
+            new_expiration_date = latest_transaction.expiration_date + timedelta(days=selected_plan.months * 30)
+        else:
+            # No active transaction or past expiration, start a new period from today
+            new_expiration_date = timezone.now() + timedelta(days=selected_plan.months * 30)
 
         # Store transaction details in the database
         transaction = Transaction.objects.create(
@@ -224,9 +234,10 @@ def payment_response(request):
             subscription_plan=selected_plan,
             transaction_uuid=transaction_uuid,
             transaction_code=transaction_code,
-
+            expiration_date=new_expiration_date
         )
         transaction.save()
+
 
         # Send email notification
         user = request.user if request.user.is_authenticated else None
@@ -538,30 +549,48 @@ def generate_signature(message, secret):
 
 ########################################################### Trainer Page #################################################################
 from django.db.models.functions import TruncMonth
-from django.db.models import Sum
+from django.db.models import Sum, Count
+from django.contrib.auth.decorators import login_required
+from .decorators import allowed_users
+from .models import Transaction, Workout, CalorieIntake
+
 @login_required
 @allowed_users(allowed_roles=['trainer'])
-
 def trainer_page(request):
-    all_transactions = Transaction.objects.filter(subscription_plan__paid=True)
-    
+    all_transactions = Transaction.objects.filter(
+        subscription_plan__paid=True
+    ).select_related('user', 'subscription_plan')  # Optimize query performance
+
     # Group transactions by month and sum up the prices
-    income_per_month = all_transactions.annotate(month=TruncMonth('created_at')).values('month').annotate(total_income=Sum('subscription_plan__price')).order_by('month')
+    income_per_month = all_transactions.annotate(
+        month=TruncMonth('created_at')
+    ).values('month').annotate(
+        total_income=Sum('subscription_plan__price')
+    ).order_by('month')
 
     # Convert to list for easier handling in JavaScript
     months = [income['month'].strftime('%Y-%m') for income in income_per_month]
     incomes = [income['total_income'] for income in income_per_month]
+
     total_videos = Workout.objects.count()
-    total_calories = CalorieIntake.objects.filter(user=request.user).aggregate(Sum('calories'))['calories__sum']
+    total_calories = CalorieIntake.objects.filter(
+        user=request.user
+    ).aggregate(Sum('calories'))['calories__sum']
+
+    user_transactions = all_transactions.values(
+        'user__username'
+    ).annotate(total_transactions=Count('id')).order_by('user__username')
+
 
     return render(request, 'trainer_page.html', {
         'total_calories': total_calories,
         'total_videos': total_videos,
-        'transactions': all_transactions,
+        'user_transactions': user_transactions,
         'total_income': sum(incomes),
         'months': months,
         'incomes': incomes
     })
+
 
 
 ########################################################### Forget Password #################################################################
@@ -626,3 +655,26 @@ def update_watch_time(request, workout_id):
     workout.save()
 
     return JsonResponse({'status': 'success', 'message': 'Watch time updated successfully'})
+
+
+########################################################### Paid Clients #################################################################
+
+def paid_clients(request):
+    # Fetch all users who have transactions, with their subscription plan details
+    users_with_transactions = Transaction.objects.select_related('user', 'subscription_plan') \
+                                                 .values('user', 'user__username') \
+                                                 .distinct()
+
+    # Prepare a list of users' details including their total calorie consumption
+    user_details = []
+    for user in users_with_transactions:
+        total_calories = CalorieIntake.objects.filter(user_id=user['user']) \
+                                              .aggregate(Sum('calories'))['calories__sum'] or 0
+
+        user_details.append({
+            'user_id': user['user'],
+            'username': user['user__username'],
+            'total_calories': total_calories
+        })
+
+    return render(request, 'paid_clients.html', {'users': user_details})

@@ -20,7 +20,7 @@ from gymapp import views
 from django.conf import settings
 from django.conf.urls.static import static
 from gymapp.views import logout_view
-
+from gymapp.views import paid_clients
 
 
 urlpatterns = [
@@ -37,6 +37,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('delete_account/', views.delete_account, name='delete_account'),
     path('subscription/', views.subscription, name='subscription'),
+    path('paid_clients/', paid_clients, name='paid_clients'),
 
 
 

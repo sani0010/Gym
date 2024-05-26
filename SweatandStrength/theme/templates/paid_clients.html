@@ -1,0 +1,44 @@
+    {% load tailwind_tags %}
+    {% tailwind_css %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Paid Clients</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    </head>
+    <body class="bg-gray-100 font-sans">
+        {% include 'topnav.html' %}
+        <div class="flex">
+            <!-- Placeholder for left navigation -->
+            <div class="w-64 h-full bg-white shadow-md">
+                <!-- Content for left nav if any -->
+            </div>
+
+            <!-- Main content area -->
+            <div class="flex-1 p-5">
+                <h1 class="text-2xl font-bold text-gray-800 mb-4">Paid Clients with Calorie Intake</h1>
+                <table class="min-w-full table-auto bg-white rounded-lg shadow-md">
+                    <thead class="bg-green-500 text-white">
+                        <tr>
+                            <th class="px-4 py-2">User</th>
+                            <th class="px-4 py-2">Total Calories Consumed</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-700">
+                        {% for user in users %}
+                        <tr class="bg-white border-b hover:bg-gray-50">
+                            <td class="px-4 py-2">{{ user.username }}</td>
+                            <td class="px-4 py-2 ">{{ user.total_calories }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center py-3 text-gray-500">No transactions or calorie data found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+    </html>

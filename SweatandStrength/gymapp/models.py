@@ -73,26 +73,47 @@ class SubscriptionPlan(models.Model):
     price = models.IntegerField()
     description = models.TextField(default='')
     paid = models.BooleanField(default=False)
-
+    months = models.IntegerField(default=1)  # Default to 1 month, adjust as necessary
 
     def __str__(self):
         return self.name
-    
+
 
     
+
+
+from datetime import timedelta
+from django.db import models
+from django.utils import timezone
+
 class Transaction(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True, blank=True)  # Assuming 'User' model from Django's auth system
     subscription_plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE)
     transaction_uuid = models.CharField(max_length=100)
     transaction_code = models.CharField(max_length=100)
-    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    expiration_date = models.DateTimeField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        # Set the expiration date based on the subscription plan name
+        if self.subscription_plan:
+            duration = 0
+            if 'One Month' in self.subscription_plan.name.lower():
+                duration = 30
+            elif 'Six-Month' in self.subscription_plan.name.lower():
+                duration = 180
+            elif 'One Year' in self.subscription_plan.name.lower():
+                duration = 365
+            
+            # Calculate the expiration date from now
+            if duration > 0:
+                self.expiration0date = timezone.now() + timedelta(days=duration)
+        
+        super(Transaction, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"Transaction {self.id}"
-
 
 
 class Goal(models.Model):
