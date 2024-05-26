@@ -4,6 +4,9 @@
 {% include 'topnav.html' %}
 
 {% block splash %}
+{% load custom_filters %}
+
+
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -19,17 +22,18 @@
         </div>
         <div class="flex space-x-3 w-full md:w-[120%]">
             <div class="mt-5 p-3 w-1/2 bg-orange-300 rounded-xl">
-                <h2 class="text-lg font-bold mb-3">Workout:</h2>
+                <h2 class="text-lg font-bold mb-3">Total Videos to enjoy:</h2>
+                <p>{{ total_videos }}</p>
             </div>
-            <div class="mt-5 p-3 w-1/2 bg-blue-300 rounded-xl">
+            <div class="mt-5 p-3 w-1/2 bg-blue-300 rounded-xl"> 
                 <h2 class="text-lg font-bold mb-3">Total Calories Consumed:</h2>
                 <p>{{ total_calories }}</p>
             </div>
         </div>
         
     </div>
-    <div class="flex-1 p-5">
-        <div class="w-full md:w-[80%] mt-5 bg-purple-300 rounded-lg shadow-md p-6 float-right">
+    <div class="flex-1 p-1 mr-4">
+        <div class="w-full md:w-[80%] mt-5 bg-gray-200 rounded-lg shadow-md p-6 float-right">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-bold">Goals</h2>
                 <a href="#" id="add-goal-btn" class="text-blue-500 hover:text-blue-700">Add a Goal</a>
@@ -42,12 +46,12 @@
             </ul>
             
         </div>
-        <div class="flex-1 p-5">
-            <div class="w-full md:w-[80%] mt-5 bg-purple-300 rounded-lg shadow-md p-6 float-right">
+
+            <div class="w-full md:w-[80%] mt-5 bg-gray-200 rounded-lg shadow-md p-6 float-right">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-2xl font-bold">Calorie Intake Over Time</h2>
                 </div>
-                <canvas id="calorie-chart" width="800" height="400"></canvas>
+                <canvas id="calorie-chart" width="800" height="300"></canvas>
             </div>
         </div>
         
@@ -216,6 +220,49 @@
             }
         }
     });
+</script>
+
+<script>
+
+        setInterval(function() {
+            const workoutId = '123'; // ID of the workout
+            const timeWatched = 10;  // Time increment to update
+    
+            fetch(`/update_watch_time/${workoutId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `time_watched=${timeWatched}`
+            }).then(response => response.json())
+              .then(data => console.log(data.message));
+        }, 60000);  // Update every minute
+
+    
+</script>
+<script>
+    var csrfToken = '{{ csrf_token }}';
+
+    function updateWatchTime(workoutId, timeWatched) {
+        console.log('Attempting to update watch time', workoutId, timeWatched);  // Check if this logs correctly when expected
+    
+        fetch(`/update_watch_time/${workoutId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': csrfToken
+            },
+            body: `time_watched=${timeWatched}`
+        })
+        .then(response => response.json())
+        .then(data => console.log('Response:', data))  // Check what the server responds
+        .catch(error => console.error('Error:', error));
+    }
+    
+</script>
+<script type="text/javascript">
+    var csrfToken = '{{ csrf_token }}';
 </script>
 
 {% endblock %}

@@ -19,7 +19,7 @@
                 <a href="{% url 'workout_detail' workout_id=p.id %}" class="bg-white rounded-md shadow-md overflow-hidden">
                     <img src="{{ image.image.url }}" alt="" class="w-full h-64 object-cover">
                     <div class="p-4">
-                        <p class="text-lg font-bold">{{ p.category.title }}</p>
+                        <p class="text-sm ">{{ p.category.title }}</p>
                         <p class="text-lg font-bold">{{ p.title }}</p>
                         <p class="text-sm">{{ p.description }}</p>
                     </div>

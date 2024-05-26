@@ -6,7 +6,7 @@
 {% block trainer %}
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
-
+<body class="bg-gradient-to-r from-orange-200 via-red-200 to-blue-200">
 <div class="mt-16 flex flex-col md:flex-row justify-between">
     <div class="md:w-64"></div>
     {% for message in messages %} {% endfor %}
@@ -14,23 +14,28 @@
         <div class="w-full md:w-[120%] h-[24%] md:h-[45%] rounded-xl">
             <img class="object-cover rounded-xl w-full h-full" src="{% static 'assets/img/one.png' %}" alt="Image"/>
         </div>
-        <div class="flex space-x-3 w-full md:w-[120%]">
-
-           
+        <div class="flex space-x-3 w-full shadow-md md:w-[120%]">
+            <div class="mt-5 p-3 w-1/2 bg-gray-100 rounded-xl">
+                <h2 class="text-lg font-bold mb-3 "><i class="fas fa-video text-orange-500"></i> Total Videos added:</h2>
+                <p>{{ total_videos }}</p>
+            </div>
+            <div class="mt-5 p-3 w-1/2 bg-gray-100 shadow-md rounded-xl">
+                <h2 class="text-lg font-bold mb-3 "><i class="fas fa-cookie-bite text-orange-500"></i> Total Calories Consumed:</h2>
+                <p>{{ total_calories }}</p>
+            </div>
         </div>
+        <div class="flex space-x-3 w-full md:w-[120%]"></div>
     </div>
-    <div class="flex-1 p-5">
-      <div class="w-full md:w-[80%] mt-5 bg-purple-300 rounded-lg shadow-md p-6 float-right">
+    <div class="flex-1 p-1">
+      <div class="w-full md:w-[80%] mt-5  bg-gray-100  rounded-lg shadow-md p-6 float-right">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold">Notifications</h2>
-
+            <h2 class="text-2xl font-bold"><i class="fas fa-bell text-orange-500"></i> Notifications</h2>
         </div>
         <ul class="list-disc pl-4">
             {% if transactions %}
             <div class="notification">
-
-                {% for transaction in transactions %}
-                <p>You are booked for {{ transaction.subscription_plan.name }} by {{ transaction.user.username }}</p>
+                {% for transaction in transactions|slice:":6" %}
+                <p><i class="fas fa-handshake"></i> You are booked for {{ transaction.subscription_plan.name }} by {{ transaction.user.username }}</p>
                 <!-- Add more transaction details as needed -->
                 {% endfor %}
             </div>
@@ -40,24 +45,69 @@
                 <p>You are currently not booked by any user.</p>
             </div>
             {% endif %}
-            
         </ul>
-    </div>
-    <div class="w-full md:w-[80%] mt-5 bg-blue-300 rounded-lg shadow-md p-6 float-right">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold">Total Income </h2>
         </div>
-        <p class="text-xl font-semibold">Total Income: ${{ total_income }}</p>
-    </div>
-    
+        
+      <div class="w-full md:w-[80%] mt-4  bg-gray-100 rounded-lg shadow-md p-6 float-right ">
+        <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold"><i class="fas fa-wallet text-orange-500"></i> Total Earning</h2>
+        </div>
+        <p class="text-xl font-semibold">Income: Rs.{{ total_income }}</p>
+      </div>
     </div>
 </div>
+<style>
+    .tighter {
+        margin-top: -140px; /* Pulls the element upwards by 20px */
+    }
+</style>
+<div class="w-full md:w-[80%]  bg-gray-100 rounded-lg shadow-md p-6 float-right tighter">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold"><i class="fas fa-chart-bar"></i> Total earnings over month</h2>
+    </div>
+    <canvas id="incomeChart" width="1200" height="300"></canvas>
+</div>
 
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 <script>
     {% for flashmsg in messages %}
     alertify.set('notifier', 'position', 'top-right');
     alertify.success('{{ flashmsg }}');
     {% endfor %}
+</script>
+<script>
+var ctx = document.getElementById('incomeChart').getContext('2d');
+var incomeChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ months|safe }},
+        datasets: [{
+            label: 'Total Income',
+            data: {{ incomes|safe }},
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.2)',
+            ],
+            borderColor: [
+                'rgba(54, 162, 235, 1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: true
+            }
+        }
+    }
+});
 </script>
 {% endblock %}

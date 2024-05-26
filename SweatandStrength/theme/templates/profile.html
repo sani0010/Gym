@@ -1,124 +1,107 @@
-
 {% load static tailwind_tags %}
 {% tailwind_css %}
 
 {% include 'topnav.html' %}
 
-
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 <body class="bg-gradient-to-r from-orange-200 via-red-200 to-blue-200">
-    <div class="md:ml-[20rem] ">
-        <div class="mt-32 p-4 ">
-        </div>  
+<div class="md:ml-[20rem] ">
+    <div class="mt-32 p-4 ">
+    </div>  
 
-        <div class=" flex flex-col space-y-5 md:flex-row md:space-y-0  justify-between relative mr-12 shadow-lg border">
-            <div id="profileSection" class="border w-[54rem]">
-
-                <form action="{% url 'profile' %}" method="POST" class="space-y-4 flex flex-col" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="flex-col space-y-4">
-                        <div class="flex justify-start">
-                            <div>
-                                <img id="profilePicturePreview" src="{{ profile_picture_url }}" alt="Profile Picture" class="w-36 h-36 rounded-full mx-auto">
-                            </div>
-                            <div class="flex-col ml-10 items-center mb-10">
-                                <h1 class="text-2xl font-bold my-5">Profile</h1>
-                                <div class="my-9">
-                                    <input type="file" id="profilePictureInput" name="profile_picture" class="hidden">
-                                    <label for="profilePictureInput" class="flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-blue-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Change Profile Picture</label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex flex-col space-y-0 space-x-0 lg:flex-row :space-y-0 md:space-x-8 ml-12 ">
-                            <div class="w-80">
-                                <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
-                                <input type="text" id="first_name" name="first_name" value="{{ user.username }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            </div>
-                            <div class="w-80">
-                                <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
-                                <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex flex-col space-y-5 md:flex-row md:space-y-0  md:space-x-9">
-                        <div class="w-80 ml-12">
-                            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                            <input type="email" id="email" name="email" value="{{ user.email }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                        </div>
+    <div class=" flex flex-col space-y-5 md:flex-row md:space-y-0 bg-gray-50 justify-between relative mr-12 shadow-lg border">
+        <div id="profileSection" class="border w-[54rem]">
+            <form action="{% url 'profile' %}" method="POST" class="space-y-4 flex flex-col" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="flex-col space-y-4">
+                    <div class="flex justify-start">
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700">Subscription</label>
-                            <a href="{% url 'subscription' %}" class="inline-flex items-center justify-center mt-1 w-full py-2 px-28 border border-transparent shadow-sm text-sm font-medium rounded-md bg-zinc-300 text-blue-600 hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                <span class="mr-2">Go Premium</span>
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                            </a>
+                            {% if profile_picture_url %}
+                                <img id="profilePicturePreview" src="{{ profile_picture_url }}" alt="Profile Picture" class="w-36 h-36 rounded-full mx-auto">
+                            {% else %}
+                                <img id="profilePicturePreview" src="{% static 'assets\img\profile.jpg' %}" alt="Profile Picture" class="w-36 h-36 rounded-full mx-auto">
+                            {% endif %}
+                        </div>
+                        <div class="flex-col ml-10 items-center mb-10">
+                            <h1 class="text-2xl font-bold my-5">Profile</h1>
+                            <div class="my-9">
+                                <input type="file" id="profilePictureInput" name="profile_picture" class="hidden">
+                                <label for="profilePictureInput" class="flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-blue-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Change Profile Picture</label>
+                            </div>
                         </div>
                     </div>
+                    
+                    <div class="flex flex-col space-y-0 space-x-0 lg:flex-row :space-y-0 md:space-x-8 ml-12 ">
+                        <div class="w-80">
+                            <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                            <input type="text" id="first_name" name="first_name" value="{{ user.username }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        </div>
+                        <div class="w-80">
+                            <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                            <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col space-y-5 md:flex-row md:space-y-0  md:space-x-9">
                     <div class="w-80 ml-12">
-                        <label for="phone_number" class="block text-sm font-medium text-gray-700">Account Type</label>
-                        {% if user.subscription_plan %}
-                            {% if user.subscription_plan.paid %}
-                                <input type="text" id="phone_number" name="phone_number" value="Paid" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" readonly>
-                            {% else %}
-                                <input type="text" id="phone_number" name="phone_number" value="Free" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" readonly>
-                            {% endif %}
-                        {% else %}
-                            <input type="text" id="phone_number" name="phone_number" value="Free" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" readonly>
-                        {% endif %}
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                     </div>
-                    
-                    
-                
-                    <div class="flex justify-end">
-                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Subscription</label>
+                        <a href="{% url 'subscription' %}" class="inline-flex items-center justify-center mt-1 w-full py-2 px-28 border border-transparent shadow-sm text-sm font-medium rounded-md bg-zinc-300 text-blue-600 hover:bg-blue-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <span class="mr-2">Go Premium</span>
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </a>
                     </div>
-                    
-                </form>
-            </div> 
-            <div class="mr-6 absolute left-[54rem]">
-                <button id="profileBtn" class="w-[19rem] py-2 px-4 mb-1 border bg-gray-100 text-black font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-500">Profile</button>
-                <button id="accountBtn" class="w-[19rem] py-2 px-4 border bg-gray-100 text-black font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-500">Account</button>
-            </div>
-            
-        
+                </div>
 
+                <div class="flex justify-end">
+                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Save</button>
+                </div>
+            </form>
+        </div> 
+        <div class="mr-6 absolute left-[54rem]">
+            <button id="profileBtn" class="w-[19rem] py-2 px-4 mb-1 border bg-gray-100 text-black font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-500">Profile</button>
+            <button id="accountBtn" class="w-[19rem] py-2 px-4 border bg-gray-100 text-black font-semibold rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 hover:bg-blue-500">Account</button>
+        </div>
         <div id="accountSection" style="display:none;">
             <div class="border w-[54rem]">
-            <div class="mt-8 ml-10">
-                <h2 class="text-lg font-bold mb-4">Create Password</h2>
-                <form action="{% url 'create_password' %}" method="POST" class="space-y-4">
-                    {% csrf_token %}
-                    <div>
-                        <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
-                        <input type="password" id="new_password" name="new_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-[30rem] shadow-sm sm:text-sm border-gray-300 rounded-md">
-                    </div>
-                    <div>
-                        <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                        <input type="password" id="confirm_password" name="confirm_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-[30rem] shadow-sm sm:text-sm border-gray-300 rounded-md">
-                    </div>
-                    <div>
-                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            Create Password
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <div class="mt-8 ml-10">
-                <h2 class="text-lg font-bold ">Delete Account</h2>
-                <p class="text-sm text-gray-700 mb-4">No longer want to use our service? You can delete your account here. This action is not reversible. All information related to this account will be deleted permanently.</p>
-                <form action="" method="POST">
-                    {% csrf_token %}
-                    <a type="submit" href="{% url 'delete_account' %}" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Yes, delete my account</a>
-                </form>
+                <div class="mt-8 ml-10">
+                    <h2 class="text-lg font-bold mb-4">Create Password</h2>
+                    <form action="{% url 'create_password' %}" method="POST" class="space-y-4">
+                        {% csrf_token %}
+                        <div>
+                            <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
+                            <input type="password" id="new_password" name="new_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-[30rem] shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-[30rem] shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        </div>
+                        <div>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Create Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="mt-8 ml-10">
+                    <h2 class="text-lg font-bold ">Delete Account</h2>
+                    <p class="text-sm text-gray-700 mb-4">No longer want to use our service? You can delete your account here. This action is not reversible. All information related to this account will be deleted permanently.</p>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <a type="submit" href="{% url 'delete_account' %}" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Yes, delete my account</a>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-</div>
 </body>
 <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 <script>

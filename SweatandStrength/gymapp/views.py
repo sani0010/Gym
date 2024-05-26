@@ -223,8 +223,8 @@ def payment_response(request):
             user=request.user if request.user.is_authenticated else None,
             subscription_plan=selected_plan,
             transaction_uuid=transaction_uuid,
-            transaction_code=transaction_code
-            # Add more fields as needed
+            transaction_code=transaction_code,
+
         )
         transaction.save()
 
@@ -232,12 +232,9 @@ def payment_response(request):
         user = request.user if request.user.is_authenticated else None
         if user and user.email:
             subject = 'Payment Successful'
-            message = f'Hi {user.username},you have booked a trainer. Your payment was successful. Your transaction code is {transaction_code}.'
+            message = f'Hi {user.username}, you have booked a trainer. Your payment was successful. Your transaction code is {transaction_code}.'
             recipient_list = [user.email]
             send_email_to_client(subject, message, recipient_list)
-
-        selected_plan.paid = True
-        selected_plan.save()
 
         return HttpResponseRedirect('/subscription')
     else:
@@ -315,6 +312,7 @@ def workout_detail(request, workout_id):
     return render(request, 'workout_detail.html', {'workout': workout})
 
 # Settings page
+@login_required(login_url='login')
 def profile(request):
     return render(request, 'profile.html')
 
@@ -353,6 +351,7 @@ def Splash(request):
     total_calories = None
     labels = []
     calories = []
+    total_videos = 0
 
     if request.user.is_authenticated:
         # Retrieve all calorie intake records for the current user
@@ -364,9 +363,11 @@ def Splash(request):
 
         # Calculate total calories
         total_calories = sum(calories)
+        total_videos = Workout.objects.count()
 
     context = {
         'total_calories': total_calories,
+        'total_videos': total_videos,
         'labels': json.dumps(labels),
         'calories': json.dumps(calories),
     }
@@ -393,38 +394,45 @@ def send_otp_email(user, otp):
     recipient_list = [user.email]
     send_mail(subject, message, email_from, recipient_list)
 
+
 # Registration view with email verification
 def Signup(request):
     if request.user.is_authenticated:
         return redirect('splash')
     else:
         if request.method == 'POST':
-
             username = request.POST['username']
             email = request.POST['email']
             password = request.POST['password']
+            confirm_password = request.POST['confirm_password']
 
-
-            if password == password:
-
-                    # Generate OTP
-                    otp = generate_otp()
-                    # Create user
-                    user = User.objects.create_user(username=username, password=password, email=email)
-                    # Create OTP instance and associate with user
-                    otp_instance = OTP.objects.create(user=user, otp_code=otp)
-                    # Send OTP via email
-                    send_otp_email(user, otp)
-                    messages.success(request, 'Account created successfully.')
-                    request.session['username'] = username  # Store username in session for verification
-                    return redirect('verify_email')  # Redirect to the OTP verification page
-            else:
-                messages.error(request, 'Password does not match ')
+            # Check if username or email already exists
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Username already exists.')
+                return redirect('signup')
+            if User.objects.filter(email=email).exists():
+                messages.error(request, 'Email already exists.')
                 return redirect('signup')
 
+            if password == confirm_password:
+                # Generate OTP
+                otp = generate_otp()
+                # Create user
+                user = User.objects.create_user(username=username, password=password, email=email)
+                # Create OTP instance and associate with user
+                otp_instance = OTP.objects.create(user=user, otp_code=otp)
+                # Send OTP via email
+                send_otp_email(user, otp)
+                messages.success(request, 'Account created successfully. Please check your email to verify your account.')
+                request.session['username'] = username  # Store username in session for verification
+                return redirect('verify_email')  # Redirect to the OTP verification page
+            else:
+                messages.error(request, 'Passwords do not match.')
+                return redirect('signup')
         else:
             form = SignupForm()
     return render(request, "signup.html", {"form": form})
+
 
 # Verification view
 def verify_email(request):
@@ -529,26 +537,30 @@ def generate_signature(message, secret):
 
 
 ########################################################### Trainer Page #################################################################
+from django.db.models.functions import TruncMonth
+from django.db.models import Sum
+@login_required
+@allowed_users(allowed_roles=['trainer'])
 
-@login_required
-@allowed_users(allowed_roles=['trainer'])
-@login_required
-@allowed_users(allowed_roles=['trainer'])
 def trainer_page(request):
-    # Fetch all transactions
-    all_transactions = Transaction.objects.all()
+    all_transactions = Transaction.objects.filter(subscription_plan__paid=True)
+    
+    # Group transactions by month and sum up the prices
+    income_per_month = all_transactions.annotate(month=TruncMonth('created_at')).values('month').annotate(total_income=Sum('subscription_plan__price')).order_by('month')
 
-    # Calculate total income by summing the prices of the transactions
-    total_income = sum(transaction.subscription_plan.price for transaction in all_transactions if transaction.subscription_plan.paid)
+    # Convert to list for easier handling in JavaScript
+    months = [income['month'].strftime('%Y-%m') for income in income_per_month]
+    incomes = [income['total_income'] for income in income_per_month]
+    total_videos = Workout.objects.count()
+    total_calories = CalorieIntake.objects.filter(user=request.user).aggregate(Sum('calories'))['calories__sum']
 
-    # Print the total transactions and income for debugging
-    print(all_transactions)
-    print(f"Total Income: {total_income}")
-
-    # Return the context with total_income to the template
     return render(request, 'trainer_page.html', {
+        'total_calories': total_calories,
+        'total_videos': total_videos,
         'transactions': all_transactions,
-        'total_income': total_income
+        'total_income': sum(incomes),
+        'months': months,
+        'incomes': incomes
     })
 
 
@@ -596,4 +608,21 @@ class CustomPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     template_name = 'password_reset_complete.html'
 
 
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
 
+@require_POST
+def update_watch_time(request, workout_id):
+    print("Request received for workout ID:", workout_id)  # Debug print
+    try:
+        time_watched = int(request.POST.get('time_watched', 0))
+        print("Time watched received:", time_watched)  # Debug print
+    except ValueError:
+        return JsonResponse({'status': 'error', 'message': 'Time watched must be an integer'}, status=400)
+
+    workout = get_object_or_404(Workout, id=workout_id)
+    workout.watch_time += time_watched
+    workout.save()
+
+    return JsonResponse({'status': 'success', 'message': 'Watch time updated successfully'})

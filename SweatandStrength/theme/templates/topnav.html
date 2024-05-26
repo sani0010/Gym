@@ -4,7 +4,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
 <div class="flex ">
-      <nav class="topnav w-full mb-20 fixed top-0 right-0  bg-gradient-to-l from-orange-200 to-white border-b border-gray-200 px-4 py-2 h-16 flex items-center justify-between ">
+      <nav class="topnav w-full mb-20 fixed top-0 right-0 bg-white px-4 border py-2 h-16 flex items-center justify-between ">
         <!-- Hamburger menu button -->
         <button class="md:hidden text-gray-900 hover:text-blue-500 focus:outline-none" id="menuBtn">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -21,9 +21,14 @@
         </div> {% endcomment %}
 
         <div class="flex items-center space-x-4 relative">
-          <div> 
-            <img src="{{ profile_picture_url }}" alt="Profile Picture" class=" w-10 h-10   rounded-full mx-auto "id="profilebtn">
+          <div>
+            {% if profile_picture_url %}
+                <img src="{{ profile_picture_url }}" alt="Profile Picture" class="w-10 h-10 rounded-full mx-auto" id="profilebtn">
+            {% else %}
+                <img src="{% static 'path/to/default/profile/picture.png' %}" alt="Profile Picture" class="w-10 h-10 rounded-full mx-auto" id="profilebtn">
+            {% endif %}
         </div>
+        
             <div
               id="profileDropdown"
               class="hidden absolute right-0 mt-36 w-48 bg-white rounded-md shadow-lg "
@@ -64,7 +69,7 @@
   </div>
 
   <!-- Left Navbar -->
-  <nav class="navbar hidden md:block bg-gradient-to-t from-orange-200 to-white fixed top-0 left-0 h-screen md:w-64 bg-white border-r border-gray-200 p-4">
+  <nav class="navbar hidden md:block  fixed top-0 left-0 h-screen md:w-64 bg-white border-r border-gray-200 p-4">
     <ul class="space-y-4">
       <li>
         <a href="{% url 'splash' %}" class="flex items-center p-2 text-gray-900 rounded-lg ">
