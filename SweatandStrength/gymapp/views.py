@@ -49,6 +49,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.views.generic.edit import FormView
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import login as auth_login
+
 ########################################################### Contact Us#################################################################
 def contact_us(request):
     if request.method == 'POST':
@@ -531,10 +532,24 @@ def generate_signature(message, secret):
 
 @login_required
 @allowed_users(allowed_roles=['trainer'])
+@login_required
+@allowed_users(allowed_roles=['trainer'])
 def trainer_page(request):
+    # Fetch all transactions
     all_transactions = Transaction.objects.all()
+
+    # Calculate total income by summing the prices of the transactions
+    total_income = sum(transaction.subscription_plan.price for transaction in all_transactions if transaction.subscription_plan.paid)
+
+    # Print the total transactions and income for debugging
     print(all_transactions)
-    return render(request, 'trainer_page.html', {'transactions': all_transactions})
+    print(f"Total Income: {total_income}")
+
+    # Return the context with total_income to the template
+    return render(request, 'trainer_page.html', {
+        'transactions': all_transactions,
+        'total_income': total_income
+    })
 
 
 ########################################################### Forget Password #################################################################

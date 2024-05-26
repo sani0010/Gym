@@ -29,4 +29,5 @@ urlpatterns = [
     path('contact/success/', views.contact_success, name='contact_success'),
     path('verify-email/', views.verify_email, name='verify_email'),
 
+
 ]
