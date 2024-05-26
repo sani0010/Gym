@@ -31,9 +31,9 @@
                     {% if exercise.workoutimage_set.exists %}
                     <img src="{{ exercise.workoutimage_set.first.image.url }}" alt="{{ exercise.title }}" class="w-24 h-24 rounded-lg mb-2" onclick="changeVideo('{{ exercise.video.url }}')">
                     {% else %}
-                    <img src="{% static 'default_exercise_image.jpg' %}" alt="{{ exercise.title }}" class="w-24 h-24 rounded-lg mb-2" onclick="changeVideo('{{ exercise.video.url }}')">
+                    <img src="{% static 'default_exercise_image.jpg' %}" alt="{{ exercise.title }}" class="w-24  h-24 rounded-lg mb-2" onclick="changeVideo('{{ exercise.video.url }}')">
                     {% endif %}
-                    <div class="text-sm text-center">{{ exercise.title }}</div>
+                    <div class="text-sm  text-center">{{ exercise.title }}</div>
                 </div>
                 {% endif %}
                 {% endfor %}
